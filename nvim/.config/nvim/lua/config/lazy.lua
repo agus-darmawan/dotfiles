@@ -20,7 +20,7 @@ require("lazy").setup({
   spec = { { import = "plugins" } },
   defaults = { lazy = true },
   install = { colorscheme = { "catppuccin", "habamax" } },
-  checker = { enabled = true, notify = false, frequency = 86400 },
+  checker = { enabled = not vim.g.offline, notify = false, frequency = 86400 },
   change_detection = { notify = false },
   ui = { border = "rounded", backdrop = 100 },
   rocks = { enabled = false },

@@ -58,12 +58,12 @@ return {
 
       require("mason").setup()
       require("mason-lspconfig").setup({
-        ensure_installed = ensure,
+        ensure_installed = vim.g.offline and {} or ensure,
         automatic_enable = ensure,
       })
       require("mason-tool-installer").setup({
         ensure_installed = langs.mason_tools,
-        run_on_start = true,
+        run_on_start = not vim.g.offline,
         start_delay = 3000,
       })
 
@@ -71,9 +71,7 @@ return {
       for _, name in ipairs(system) do
         local cmd = vim.lsp.config[name] and vim.lsp.config[name].cmd
         local bin = type(cmd) == "table" and cmd[1] or nil
-        if bin and vim.fn.executable(bin) == 1 then
-          vim.lsp.enable(name)
-        end
+        if bin and vim.fn.executable(bin) == 1 then vim.lsp.enable(name) end
       end
 
       -- buffer-local keymaps on attach
@@ -101,6 +99,11 @@ return {
 
           if client and client.name == "clangd" then
             map("<leader>ch", "<cmd>LspClangdSwitchSourceHeader<cr>", "Switch header/source")
+          end
+
+          -- inline color swatches (tailwind, css, flutter) on Neovim 0.12+
+          if client and vim.lsp.document_color and client:supports_method("textDocument/documentColor") then
+            vim.lsp.document_color.enable(true, ev.buf)
           end
 
           if client and client:supports_method("textDocument/inlayHint") then

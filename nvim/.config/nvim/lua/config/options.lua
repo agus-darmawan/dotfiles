@@ -62,12 +62,8 @@ opt.shortmess:append({ W = true, I = true, c = true, C = true })
 -- Clipboard: system clipboard locally, OSC52 over SSH / in containers.
 -- OSC52 travels through tmux (set-clipboard on) and Ghostty to the Mac clipboard.
 local function use_osc52()
-  if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
-    return true
-  end
-  if vim.fn.has("mac") == 1 then
-    return false
-  end
+  if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then return true end
+  if vim.fn.has("mac") == 1 then return false end
   local has_native = vim.fn.executable("xclip") == 1
     or vim.fn.executable("xsel") == 1
     or vim.fn.executable("wl-copy") == 1
@@ -77,18 +73,14 @@ end
 if use_osc52() then
   local osc52 = require("vim.ui.clipboard.osc52")
   -- paste from the unnamed register: many terminals block OSC52 reads
-  local function paste()
-    return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") }
-  end
+  local function paste() return { vim.fn.split(vim.fn.getreg(""), "\n"), vim.fn.getregtype("") } end
   vim.g.clipboard = {
     name = "OSC 52",
     copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
     paste = { ["+"] = paste, ["*"] = paste },
   }
 end
-vim.schedule(function()
-  opt.clipboard = "unnamedplus"
-end)
+vim.schedule(function() opt.clipboard = "unnamedplus" end)
 
 -- Filetypes for robotics / containers
 vim.filetype.add({
@@ -122,3 +114,7 @@ vim.filetype.add({
 })
 
 vim.g.autoformat = true
+
+-- Offline mode (robots/Jetsons without internet): `export NVIM_OFFLINE=1`
+-- skips automatic installs of parsers, LSP servers and tools, and plugin update checks.
+vim.g.offline = vim.env.NVIM_OFFLINE == "1"
