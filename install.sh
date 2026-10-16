@@ -108,11 +108,11 @@ if ((DO_PLUGINS)); then
     ok "tpm plugins" || warn "open tmux and press prefix + I"
 
   step "zsh plugins"
-  zsh -ic 'exit' >/dev/null 2>&1 && ok "fzf-tab, autosuggestions, syntax-highlighting"
+  zsh -ic 'exit 0' >/dev/null 2>&1 && ok "fzf-tab, autosuggestions, syntax-highlighting" || warn "open a new shell to finish"
 
   step "Neovim plugins (first run takes a minute)"
   if command -v nvim >/dev/null 2>&1; then
-    nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 && ok "lazy.nvim synced" || warn "open nvim once to finish"
+    nvim --headless "+Lazy! restore" +qa >/dev/null 2>&1 && ok "plugins installed at the versions in lazy-lock.json" || warn "open nvim once to finish"
   fi
 
   if command -v bat >/dev/null 2>&1; then

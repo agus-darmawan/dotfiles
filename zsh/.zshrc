@@ -11,4 +11,4 @@ for _f in "$ZDOTCFG"/*.zsh(N); do
 done
 unset _f
 
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi

@@ -36,8 +36,9 @@ esac
 step() { printf "\n\033[34m==>\033[0m %s\n" "$*"; }
 ok() { printf "  \033[32m✓\033[0m %s\n" "$*"; }
 
-gh_latest() { # owner/repo → version without leading v
-  curl -fsSL "https://api.github.com/repos/$1/releases/latest" | grep -Po '"tag_name":\s*"v?\K[^"]+'
+gh_latest() { # owner/repo → newest semver tag without the leading v (no API rate limits)
+  git ls-remote --tags --refs "https://github.com/$1" |
+    grep -oE 'refs/tags/v?[0-9]+\.[0-9]+\.[0-9]+$' | sed -E 's#refs/tags/v?##' | sort -V | tail -1
 }
 
 # ── apt ──────────────────────────────────────────────────────
@@ -74,7 +75,8 @@ ok "fzf $(fzf --version | cut -d' ' -f1)"
 
 # ── starship · zoxide · lazygit ─────────────────────────────
 step "starship, zoxide, lazygit"
-command -v starship >/dev/null || curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$BIN" >/dev/null
+command -v starship >/dev/null ||
+  curl -fsSL "https://github.com/starship/starship/releases/latest/download/starship-${ARCH/arm64/aarch64}-unknown-linux-musl.tar.gz" | tar -xz -C "$BIN" starship
 command -v zoxide >/dev/null || curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh >/dev/null 2>&1
 if ! command -v lazygit >/dev/null; then
   v=$(gh_latest jesseduffield/lazygit)
@@ -86,7 +88,7 @@ if ((!MINIMAL)); then
   # ── Node (Mason needs npm for many LSPs) ──────────────────
   step "Node.js"
   if ! command -v node >/dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash - >/dev/null
+    curl -fsSL https://deb.nodesource.com/setup_22.x | ${SUDO:+$SUDO -E} bash - >/dev/null
     $SUDO apt-get install -y -qq nodejs >/dev/null
   fi
   ok "node $(node --version)"
@@ -117,15 +119,15 @@ step "Plugins"
 TPM="$HOME/.local/share/tmux/plugins/tpm"
 [[ -d $TPM ]] || git clone -q --depth=1 https://github.com/tmux-plugins/tpm "$TPM"
 TMUX_PLUGIN_MANAGER_PATH="$HOME/.local/share/tmux/plugins/" "$TPM/bin/install_plugins" >/dev/null 2>&1 || true
-zsh -ic 'exit' >/dev/null 2>&1 || true
-nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 || true
+zsh -ic 'exit 0' >/dev/null 2>&1 || true
+nvim --headless "+Lazy! restore" +qa >/dev/null 2>&1 || true
 ok "tmux · zsh · nvim plugins"
 
 # ROS colcon defaults (compile_commands + debug symbols)
 if [[ -d /opt/ros ]] && [[ ! -f $HOME/.colcon/defaults.yaml ]]; then
   mkdir -p "$HOME/.colcon"
   cp "$DOTFILES/templates/ros2/colcon_defaults.yaml" "$HOME/.colcon/defaults.yaml"
-  ok "~/.colcon/defaults.yaml"
+  ok "colcon defaults (compile_commands + RelWithDebInfo)"
 fi
 
 if [[ ${SHELL:-} != */zsh ]]; then
