@@ -36,7 +36,7 @@ mem() {
       /occupied by compressor/    {c=$5}
       END {printf "%.1f/%.0fG", (a+w+c)*ps/1073741824, t/1073741824}'
   else
-    free -b | awk '/^Mem:/ {printf "%.1f/%.0fG", $3/1073741824, $2/1073741824}'
+    awk '/^MemTotal:/ {t=$2} /^MemAvailable:/ {a=$2} END {printf "%.1f/%.0fG", (t-a)/1048576, t/1048576}' /proc/meminfo
   fi
 }
 
