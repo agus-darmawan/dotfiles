@@ -16,9 +16,10 @@ cd ~/dotfiles && ./install.sh
 ```
 
 1. Buka **Ghostty**. Font dan theme langsung aktif.
-2. Kasih izin *Accessibility* ke Ghostty (System Settings → Privacy & Security), supaya `cmd+\`` (quick terminal) bisa dipakai dari mana saja.
+2. Kasih izin *Accessibility* ke Ghostty (System Settings → Privacy & Security), supaya `` cmd+` `` (quick terminal) bisa dipakai dari mana saja.
 3. Edit IP robot di `~/.ssh/config.d/robots`.
 4. Ketik `nvim` sekali, lalu tunggu Mason selesai install LSP (cek progresnya dengan `:Mason`).
+5. Cek hasil instalasi dengan `~/dotfiles/tests/smoke.sh`. Semua baris harus ✓.
 
 ---
 

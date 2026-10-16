@@ -87,5 +87,8 @@ git clone https://github.com/agus-darmawan/dotfiles ~/dotfiles
 
 `--minimal` skips Node — Mason servers that need npm (pyright, json, yaml…) won't install, clangd/lua still work.
 
+On a robot without internet, add `export NVIM_OFFLINE=1` to `~/.zshrc.local`: Neovim then skips
+automatic parser, LSP and plugin-update downloads, so it starts quietly.
+
 When you SSH into a robot that runs its own tmux, press **F12** on the Mac to turn the outer tmux off.
 The robot's tmux keeps its default `C-b` prefix, yours is `C-a`, so they never clash.

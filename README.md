@@ -1,9 +1,34 @@
+<div align="center">
+
+<img src="assets/logo.svg" width="112" alt="dotfiles logo">
+
 # dotfiles
 
-My daily **macOS** terminal setup: Ghostty + tmux + zsh + Neovim.
-Built for ROS 2 (C++/Python), web (Next.js), Flutter, Docker, and SSH into robots.
+**My daily macOS terminal: Ghostty, tmux, zsh and Neovim, set up for ROS 2, C++, web and Flutter
+work. The same config runs inside Docker dev containers and on robots over SSH.**
 
-One theme (**Catppuccin Mocha**), one font (**JetBrainsMono Nerd Font**).
+[![ci](https://img.shields.io/github/actions/workflow/status/agus-darmawan/dotfiles/ci.yml?branch=main&label=ci&logo=github)](https://github.com/agus-darmawan/dotfiles/actions/workflows/ci.yml)
+![macOS](https://img.shields.io/badge/macOS-daily%20driver-000000?logo=apple&logoColor=white)
+![Ghostty](https://img.shields.io/badge/terminal-Ghostty-3551F3?logo=ghostty&logoColor=white)
+![tmux](https://img.shields.io/badge/tmux-3.4%2B-1BB91F?logo=tmux&logoColor=white)
+![zsh](https://img.shields.io/badge/shell-zsh-F15A24?logo=zsh&logoColor=white)
+![Neovim](https://img.shields.io/badge/Neovim-0.11%2B-57A143?logo=neovim&logoColor=white)
+![ROS 2](https://img.shields.io/badge/ROS%202-Humble%20%7C%20Jazzy-22314E?logo=ros&logoColor=white)
+![Theme](https://img.shields.io/badge/theme-Catppuccin%20Mocha-CBA6F7)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+[Install](#install) · [Features](#features) · [Keys](#keys) · [Documentation](#documentation) ·
+[Develop](#develop)
+
+<img src="assets/demo.gif" alt="tmux and Neovim: file picker, LSP hover, which-key, explorer, lazygit and the SSH picker" width="100%">
+
+</div>
+
+---
+
+One repository for the whole terminal: the emulator, the multiplexer, the shell and the editor share
+one theme and one font, and know about each other (`Ctrl-h/j/k/l` moves between tmux panes and
+Neovim splits, yanks reach the macOS clipboard from inside containers and SSH sessions).
 
 ## Install
 
@@ -12,62 +37,88 @@ git clone https://github.com/agus-darmawan/dotfiles ~/dotfiles
 cd ~/dotfiles && ./install.sh
 ```
 
-The installer:
-- installs everything in the [`Brewfile`](Brewfile) (Ghostty, tmux, Neovim, fzf, lazygit, …)
-- backs up your old configs to `~/.dotfiles-backup/`
-- symlinks the configs with `stow`
-- sets up `~/.ssh/config` and `~/.ssh/config.d/robots`
-- installs tmux, zsh and Neovim plugins
+The installer runs the [`Brewfile`](Brewfile), backs up existing configs to `~/.dotfiles-backup/`,
+links everything with GNU Stow, prepares `~/.ssh/config` and `~/.ssh/config.d/robots`, and installs
+the tmux, zsh and Neovim plugins. Then open **Ghostty** and type `t`. Check the result with
+`~/dotfiles/tests/smoke.sh`.
 
-Then open **Ghostty** and type `t`.
+Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
+([guide](docs/CONTAINER.md)).
 
-> The first time you open `nvim`, give it a minute: Mason installs the language servers in the background (`:Mason` to watch).
+## Features
 
-## What's inside
+**Terminal and tmux**
+- Ghostty with Catppuccin Mocha, JetBrainsMono Nerd Font and a drop-down quick terminal on `` cmd+` ``.
+- tmux status bar on top: session, windows, ROS domain, CPU, RAM, running containers, IP, battery, time.
+- Popups for lazygit, lazydocker and btop; fuzzy pickers for projects, sessions, SSH hosts and containers.
+- Layouts with one command: `tros` (ROS 2 inside a container), `trobot go2` (field session on a
+  robot), `tweb` (web and Flutter). `F12` hands every key to a tmux running on the robot.
 
-| Tool | What it does |
-|---|---|
-| **Ghostty** | Terminal, drop-down quick terminal on `cmd+\`` |
-| **tmux** | Status bar on top (CPU, RAM, Docker, IP, battery, ROS domain), popups for lazygit/btop/lazydocker, SSH and container pickers |
-| **zsh** | starship, fzf-tab, autosuggestions, zoxide, atuin, plus ROS/Docker/SSH helpers |
-| **Neovim** | LSP, completion, debugger, ROS 2 build → quickfix, Flutter, web |
-| **git** | lazygit + delta |
+<img src="assets/tmux.png" alt="tmux with Neovim, a file tree and a running node" width="100%">
 
-## Most-used keys
+**Neovim**
+- Own modular config, every language in one registry file: LSP, formatter, linter and parser.
+- C++ (clangd), Python, CMake, ROS launch/URDF/xacro XML, `.msg`/`.srv`, TypeScript and Next.js,
+  Flutter, Docker, Bash, Go, Rust, Swift, Lua, Markdown.
+- blink.cmp completion, snacks.nvim pickers and explorer, which-key, lazygit, diffview, DAP debugging.
 
-tmux prefix = `Ctrl-a` · Neovim leader = `Space`
+<img src="assets/nvim.png" alt="clangd completion in Neovim" width="100%">
+
+**ROS 2**
+- `Space rb` builds the package you are editing with colcon: errors land in the quickfix list,
+  `compile_commands.json` is merged and clangd restarts.
+- Pickers for topics, nodes, services, launch files and executables; `ros2 interface show` for the
+  message under the cursor; debug a node from `install/` with codelldb.
+- Shell helpers: `ros`, `rosdomain`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`, `rif`.
+
+<img src="assets/ros-build.gif" alt="colcon build from Neovim: error in quickfix, fix, rebuild" width="100%">
+
+**Containers and robots**
+- `dsh` / `C-a d` opens the best shell in any running container; `tros` puts every pane inside it.
+- SSH multiplexing: extra panes on the same robot connect instantly; `sall go2 lite3` types into
+  several robots at once.
+- `NVIM_OFFLINE=1` on machines without internet skips every automatic download.
+
+## Keys
+
+tmux prefix `Ctrl-a` · Neovim leader `Space`
 
 | Keys | Action |
 |---|---|
-| `t` | open tmux session `main` |
-| `C-a \|` / `C-a -` | split right / down |
+| `t` | attach or create the tmux session `main` |
+| `C-a \|` · `C-a -` | split right · split down |
 | `C-h/j/k/l` | move between tmux panes and Neovim splits |
-| `C-a f` / `C-a s` | open project / switch session |
-| `C-a S` / `C-a d` | SSH to a host / shell into a container |
-| `C-a g` / `C-a b` | lazygit / btop |
-| `Space Space` / `Space /` | find file / grep |
-| `gd` / `K` / `Space ca` | definition / docs / code action |
-| `Space rb` / `Space rt` | build ROS package / browse topics |
+| `C-a f` · `C-a s` | open a project · switch session |
+| `C-a S` · `C-a d` | SSH to a host · shell into a container |
+| `C-a g` · `C-a b` | lazygit · btop |
+| `Space Space` · `Space /` | find files · grep |
+| `gd` · `K` · `Space ca` | definition · hover · code action |
+| `Space rb` · `Space rt` | colcon build this package · ROS topics |
 | `Space gg` | lazygit |
 
-All keys: [docs/KEYMAPS.md](docs/KEYMAPS.md)
+Every key: [docs/KEYMAPS.md](docs/KEYMAPS.md)
 
-## Docs
+## Documentation
 
-- [Tutorial](docs/TUTORIAL.md) — learn it step by step (Bahasa Indonesia)
-- [Keymaps](docs/KEYMAPS.md) — full shortcut list
-- [Containers & robots](docs/CONTAINER.md) — same config inside Docker / on a Jetson
+| For | Document |
+|---|---|
+| Learning the setup step by step (Bahasa Indonesia) | [TUTORIAL.md](docs/TUTORIAL.md) |
+| All shortcuts: Ghostty, tmux, Neovim, ROS, Flutter, git | [KEYMAPS.md](docs/KEYMAPS.md) |
+| Docker dev containers, Jetson, robots | [CONTAINER.md](docs/CONTAINER.md) |
 
-## Personal overrides (not in git)
+Personal overrides stay out of git: `~/.zshrc.local`, `~/.config/tmux/tmux.local.conf`,
+`~/.config/git/config.local`, `~/.ssh/config.d/`.
 
-- `~/.zshrc.local` — private env vars and aliases
-- `~/.config/git/config.local` — work email, etc.
-- `~/.ssh/config.d/` — robot and server hosts
-
-## Update
+## Develop
 
 ```bash
-cd ~/dotfiles && git pull && ./install.sh --no-brew
+~/dotfiles/tests/smoke.sh     # links, tmux, zsh helpers, every Neovim plugin
 ```
 
-Remove the symlinks: `./install.sh --unlink`
+The `ci` workflow runs on every push: ShellCheck, StyLua and syntax checks; a full `install.sh` on
+macOS followed by the smoke test; and `container/install.sh` inside the `ros:humble` and `ros:jazzy`
+images, where Neovim builds a real ament package with colcon.
+
+Update with `git pull && ./install.sh --no-brew`; remove the links with `./install.sh --unlink`.
+
+Released under the [MIT License](LICENSE).

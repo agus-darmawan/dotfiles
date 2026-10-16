@@ -6,7 +6,7 @@ Leader = `Space` 路 tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait 鈥
 
 | Keys | Action |
 |---|---|
-| `cmd+\`` | quick terminal (drop-down, global) |
+| `` cmd+` `` | quick terminal (drop-down, global) |
 | `cmd+t` / `cmd+w` | new / close tab |
 | `cmd+d` / `cmd+shift+d` | native split right / down |
 | `cmd+alt+h/j/k/l` | move between native splits |
@@ -18,7 +18,7 @@ Leader = `Space` 路 tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait 鈥
 | Keys | Action |
 |---|---|
 | `C-a c` / `C-a C` | new window (same dir) / named after dir |
-| `C-a \|` `C-a \` / `C-a -` | split right / down |
+| `C-a \|` (or `C-a \`) 路 `C-a -` | split right 路 split down |
 | `C-h/j/k/l` | move pane (seamless with Neovim) |
 | `C-a H/J/K/L` | resize pane (repeatable) |
 | `C-a m` | zoom pane |
