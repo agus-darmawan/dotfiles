@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 1" # weekly: catch upstream plugin / formula breakage
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -S warning install.sh container/install.sh tmux/.config/tmux/scripts/*.sh tests/*.sh
+      - name: zsh syntax
+        run: |
+          sudo apt-get install -y -qq zsh >/dev/null
+          for f in zsh/.zshrc zsh/.config/zsh/*.zsh; do zsh -n "$f"; done
+      - name: stylua
+        uses: JohnnyMorganz/stylua-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          version: 2.6.0
+          args: --check --config-path nvim/.config/nvim/.stylua.toml nvim/.config/nvim tests
+      - name: yaml / toml / json
+        run: |
+          python3 - <<'EOF'
+          import glob, json, tomllib, yaml
+          for f in glob.glob("tmux/.config/tmuxp/*.yaml") + glob.glob(".github/workflows/*.yml") + ["lazygit/.config/lazygit/config.yml"]:
+              yaml.safe_load(open(f))
+          tomllib.load(open("starship/.config/starship.toml", "rb"))
+          json.load(open("nvim/.config/nvim/lazy-lock.json"))
+          print("ok")
+          EOF
+
+  macos:
+    name: macOS install
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dotfiles
+      - name: move repo to ~/dotfiles
+        run: mv dotfiles "$HOME/dotfiles"
+      - name: install.sh (Homebrew bundle, links, plugins)
+        run: ~/dotfiles/install.sh
+      - name: smoke test
+        run: ~/dotfiles/tests/smoke.sh
+
+  container:
+    name: ROS 2 container (${{ matrix.distro }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro: [humble, jazzy]
+    container: ros:${{ matrix.distro }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: container/install.sh
+        run: ./container/install.sh
+      - name: smoke test
+        run: PATH="$HOME/.local/bin:$PATH" ./tests/smoke.sh
+      - name: ROS 2 integration
+        run: PATH="$HOME/.local/bin:$PATH" ./tests/ros.sh
