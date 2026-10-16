@@ -1,0 +1,9 @@
+# Copy to ~/.colcon/defaults.yaml — plain `colcon build` then always
+# exports compile_commands.json and keeps debug symbols.
+build:
+  symlink-install: true
+  cmake-args:
+    - -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+  event-handlers:
+    - console_cohesion+

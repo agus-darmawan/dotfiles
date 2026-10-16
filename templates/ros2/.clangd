@@ -1,0 +1,20 @@
+# Drop in your colcon workspace root (next to src/).
+# compile_commands.json is merged there by `cb` / <leader>rb.
+CompileFlags:
+  CompilationDatabase: .
+  Remove: [-fno-gnu-unique, -fconcepts-diagnostics-depth=*]
+
+Diagnostics:
+  UnusedIncludes: Strict
+  MissingIncludes: Strict
+  ClangTidy:
+    Add: [bugprone-*, performance-*, modernize-*, readability-braces-around-statements]
+    Remove: [modernize-use-trailing-return-type, modernize-use-nodiscard, modernize-avoid-c-arrays]
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
+
+Index:
+  Background: Build
