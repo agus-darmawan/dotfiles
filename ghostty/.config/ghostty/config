@@ -48,14 +48,14 @@ shell-integration-features = no-cursor,ssh-terminfo,ssh-env
 quick-terminal-position = top
 quick-terminal-size = 45%
 quick-terminal-animation-duration = 0.12
-keybind = global:cmd+grave_accent=toggle_quick_terminal
+keybind = global:cmd+backquote=toggle_quick_terminal
 
 # ── Splits (Ghostty-native, when not using tmux) ─────────────
 keybind = cmd+d=new_split:right
 keybind = cmd+shift+d=new_split:down
 keybind = cmd+alt+h=goto_split:left
-keybind = cmd+alt+j=goto_split:bottom
-keybind = cmd+alt+k=goto_split:top
+keybind = cmd+alt+j=goto_split:down
+keybind = cmd+alt+k=goto_split:up
 keybind = cmd+alt+l=goto_split:right
 keybind = cmd+shift+enter=toggle_split_zoom
 keybind = cmd+shift+e=equalize_splits

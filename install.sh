@@ -44,8 +44,11 @@ if ((DO_BREW)); then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
   fi
-  brew bundle --file "$DOTFILES/Brewfile"
-  ok "packages installed"
+  if brew bundle --file "$DOTFILES/Brewfile"; then
+    ok "packages installed"
+  else
+    warn "some packages failed — re-run: brew bundle --file ~/dotfiles/Brewfile"
+  fi
 fi
 
 command -v stow >/dev/null 2>&1 || die "GNU stow missing (brew install stow)"
@@ -68,6 +71,17 @@ backup ".config/starship.toml"
 stow -d "$DOTFILES" -t "$HOME" --restow "${PACKAGES[@]}"
 ok "linked: ${PACKAGES[*]}"
 [[ -d $BACKUP ]] && warn "old files saved in $BACKUP"
+
+# ── macOS terminfo for tmux (system ncurses lacks tmux-256color) ──
+if ! infocmp tmux-256color >/dev/null 2>&1; then
+  for ic in /opt/homebrew/opt/ncurses/bin/infocmp /usr/local/opt/ncurses/bin/infocmp; do
+    if [[ -x $ic ]]; then
+      "$ic" -x tmux-256color >/tmp/tmux-256color.info && tic -x -o "$HOME/.terminfo" /tmp/tmux-256color.info &&
+        ok "installed tmux-256color terminfo"
+      break
+    fi
+  done
+fi
 
 # ── SSH skeleton ─────────────────────────────────────────────
 step "SSH"

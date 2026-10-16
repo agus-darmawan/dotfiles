@@ -7,6 +7,7 @@ cask "font-symbols-only-nerd-font"
 
 # ── Shell & multiplexer ──────────────────────────────────────
 brew "tmux"
+brew "ncurses"            # tmux-256color terminfo for macOS
 brew "tmuxp"
 brew "starship"
 brew "zoxide"
