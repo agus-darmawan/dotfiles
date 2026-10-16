@@ -1,0 +1,9 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.env.local
+compile_commands.json
+.cache/clangd/
+Session.vim
+.luarc.json
