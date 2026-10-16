@@ -15,7 +15,7 @@ hosts() {
 out=$(hosts | fzf --prompt="󰣀  " --height=100% --reverse --border=none \
   --expect=ctrl-v,ctrl-s,ctrl-o \
   --header="enter: window · ctrl-v: vsplit · ctrl-s: split · ctrl-o: here" \
-  --preview='ssh -G {} 2>/dev/null | grep -E "^(hostname|user|port|identityfile|proxyjump) " | column -t' \
+  --preview='ssh -G {} 2>/dev/null | awk "/^(hostname|user|port|identityfile|proxyjump) / {printf \"%-13s %s\\n\", \$1, \$2}"' \
   --preview-window=right:50%) || exit 0
 
 key=$(head -1 <<<"$out")

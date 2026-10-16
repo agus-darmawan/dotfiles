@@ -6,7 +6,7 @@ set -euo pipefail
 command -v docker >/dev/null || { echo "docker not found"; sleep 1; exit 1; }
 
 out=$(docker ps --format '{{.Names}}\t{{.Image}}\t{{.Status}}' |
-  column -t -s $'\t' |
+  awk -F'\t' '{printf "%-28s %-36s %s\n", $1, $2, $3}' |
   fzf --prompt="  " --height=100% --reverse --border=none \
     --expect=ctrl-v,ctrl-o \
     --header="enter: window · ctrl-v: vsplit · ctrl-o: here" \

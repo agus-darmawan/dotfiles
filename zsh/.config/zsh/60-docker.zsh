@@ -12,7 +12,7 @@ alias di='docker images'
 alias lzd=lazydocker
 
 _dpick() {
-  docker ps ${1:-} --format '{{.Names}}\t{{.Image}}\t{{.Status}}' | column -t -s $'\t' |
+  docker ps ${1:-} --format '{{.Names}}\t{{.Image}}\t{{.Status}}' | awk -F'\t' '{printf "%-28s %-36s %s\n", $1, $2, $3}' |
     fzf --prompt=" ${2:-container} ❯ " ${3:-} --preview 'docker logs --tail 30 {1} 2>&1' --preview-window=down:40% |
     awk '{print $1}'
 }
