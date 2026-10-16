@@ -1,0 +1,8 @@
+.DS_Store
+*.local
+**/config.local
+*.swp
+
+# runtime data that must not live in the repo
+tmux/.config/tmux/plugins/
+nvim/.config/nvim/.luarc.json

@@ -1,0 +1,24 @@
+# Copy to ~/.ssh/config.d/robots and adjust IPs/users to your robots.
+# Then: `s` (fuzzy picker) · `trobot go2` (tmux field layout) · `sall go2 lite3` (synced panes)
+
+Host go2
+  HostName 192.168.123.18
+  User unitree
+
+Host lite3
+  HostName 192.168.1.120
+  User ysc
+
+Host genisom
+  HostName 192.168.1.100
+  User user
+
+Host jetson
+  HostName 192.168.1.50
+  User nvidia
+  # Reach a robot through the Jetson:
+  # ProxyJump jetson
+
+Host homeserver
+  HostName 192.168.1.10
+  User agus

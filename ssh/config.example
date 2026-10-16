@@ -1,0 +1,19 @@
+# Copied to ~/.ssh/config by install.sh if you don't have one yet.
+# Not stowed on purpose — keep real hosts/keys out of git.
+#
+# Put per-group hosts in ~/.ssh/config.d/*  (see robots.example)
+
+IgnoreUnknown UseKeychain
+Include ~/.ssh/config.d/*
+
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+  ServerAliveInterval 30
+  ServerAliveCountMax 4
+  # Multiplexing: first connection authenticates, the rest open instantly.
+  # Great for tmux layouts with many panes on the same robot.
+  ControlMaster auto
+  ControlPath ~/.ssh/sockets/%r@%h-%p
+  ControlPersist 10m
