@@ -31,6 +31,7 @@ vim.defer_fn(function()
     )
     vim.fn.writefile({ "int main() { return 0; }" }, ws .. "/src/demo_pkg/src/main.cpp")
     vim.fn.writefile({ "string data", "---", "bool ok" }, ws .. "/src/demo_pkg/Ping.srv")
+    local function real(p) return p and (vim.uv or vim.loop).fs_realpath(p) or p end
 
     vim.cmd.edit(ws .. "/src/demo_pkg/src/main.cpp")
     check("colorscheme", (vim.g.colors_name or ""):match("catppuccin") ~= nil, vim.g.colors_name)
@@ -38,7 +39,7 @@ vim.defer_fn(function()
 
     local ros = require("util.ros")
     check("ros package", ros.package() == "demo_pkg", ros.package())
-    check("ros workspace", ros.workspace() == ws, ros.workspace())
+    check("ros workspace", real(ros.workspace()) == real(ws), ros.workspace())
     check("ros keymap", vim.fn.maparg("<leader>rb", "n") ~= "", "missing <leader>rb")
 
     for file, ft in pairs({

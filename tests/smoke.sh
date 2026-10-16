@@ -5,7 +5,18 @@ set -uo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOG="$(mktemp)"
+NVIM_LOG="$(mktemp)"
 fail=0
+
+# failures also become GitHub Actions annotations (visible in the run summary)
+annotate() {
+  [[ -n ${GITHUB_ACTIONS:-} ]] || return 0
+  local msg=$2
+  msg=${msg//'%'/'%25'}
+  msg=${msg//$'\r'/'%0D'}
+  msg=${msg//$'\n'/'%0A'}
+  echo "::error title=$1::$msg"
+}
 
 check() {
   local name=$1
@@ -15,8 +26,16 @@ check() {
   else
     printf '  \033[31m✗\033[0m %s\n' "$name"
     sed 's/^/      /' "$LOG" | tail -25
+    annotate "smoke: $name" "$(tail -15 "$LOG")"
     fail=1
   fi
+}
+
+tmux_config() {
+  local rc=0
+  tmux -L dotfiles-smoke -f /dev/null new-session -d ';' source-file "$HOME/.config/tmux/tmux.conf" || rc=1
+  tmux -L dotfiles-smoke kill-server 2>/dev/null
+  return $rc
 }
 
 echo "==> dotfiles smoke test"
@@ -24,15 +43,25 @@ check "configs are linked" test -L "$HOME/.config/nvim" -a -L "$HOME/.config/tmu
 for bin in nvim tmux zsh git fzf starship zoxide lazygit; do
   check "$bin installed" command -v "$bin"
 done
-check "tmux config loads" tmux -L dotfiles-smoke -f "$HOME/.config/tmux/tmux.conf" new-session -d ';' kill-server
+check "tmux config loads without errors" tmux_config
 check "tmux status segments" bash -c '
   s="$HOME/.config/tmux/scripts/status.sh"
   [[ -n "$("$s" cpu)" && -n "$("$s" mem)" ]]'
 check "zsh starts with helpers" zsh -ic 'for f in ros cb cbp tros trobot dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
-echo "==> neovim"
-NVIM_OFFLINE=1 nvim --headless "+lua dofile('$DOTFILES/tests/smoke.lua')" 2>&1 || fail=1
 
-rm -f "$LOG"
+echo "==> neovim"
+nvim_rc=0
+NVIM_OFFLINE=1 nvim --headless "+lua dofile('$DOTFILES/tests/smoke.lua')" >"$NVIM_LOG" 2>&1 || nvim_rc=1
+cat "$NVIM_LOG"
+if grep -q "✗" "$NVIM_LOG"; then
+  nvim_rc=1
+  annotate "smoke: neovim" "$(grep "✗" "$NVIM_LOG")"
+elif ((nvim_rc)); then
+  annotate "smoke: neovim" "$(tail -15 "$NVIM_LOG")"
+fi
+((nvim_rc)) && fail=1
+
+rm -f "$LOG" "$NVIM_LOG"
 if ((fail)); then
   echo "==> FAILED"
   exit 1

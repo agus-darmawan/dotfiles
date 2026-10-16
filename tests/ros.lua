@@ -21,7 +21,8 @@ vim.defer_fn(function()
 
   local pkg = ros.package()
   check("package detected", pkg ~= nil, pkg)
-  check("workspace detected", ros.workspace() == ws, ros.workspace())
+  local function real(p) return p and (vim.uv or vim.loop).fs_realpath(p) or p end
+  check("workspace detected", real(ros.workspace()) == real(ws), ros.workspace())
 
   local db = ws .. "/compile_commands.json"
   ros.colcon({ pkg = pkg })
