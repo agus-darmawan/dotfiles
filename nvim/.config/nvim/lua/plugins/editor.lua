@@ -37,8 +37,13 @@ return {
     event = "VeryLazy",
     opts = {
       mappings = {
-        add = "gsa", delete = "gsd", find = "gsf", find_left = "gsF",
-        highlight = "gsh", replace = "gsr", update_n_lines = "gsn",
+        add = "gsa",
+        delete = "gsd",
+        find = "gsf",
+        find_left = "gsF",
+        highlight = "gsh",
+        replace = "gsr",
+        update_n_lines = "gsn",
       },
     },
   },
@@ -107,9 +112,7 @@ return {
   {
     "christoomey/vim-tmux-navigator",
     cmd = { "TmuxNavigateLeft", "TmuxNavigateDown", "TmuxNavigateUp", "TmuxNavigateRight" },
-    init = function()
-      vim.g.tmux_navigator_no_wrap = 1
-    end,
+    init = function() vim.g.tmux_navigator_no_wrap = 1 end,
     keys = {
       { "<C-h>", "<cmd>TmuxNavigateLeft<cr>", desc = "Window left" },
       { "<C-j>", "<cmd>TmuxNavigateDown<cr>", desc = "Window down" },

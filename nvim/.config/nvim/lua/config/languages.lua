@@ -12,30 +12,68 @@
 -- ─────────────────────────────────────────────────────────────
 local M = {}
 
-local function has(bin)
-  return vim.fn.executable(bin) == 1
-end
+local function has(bin) return vim.fn.executable(bin) == 1 end
 
 -- formatter runs only when one of these config files exists upwards
 local function needs_config(files)
-  return function(_, ctx)
-    return vim.fs.find(files, { upward = true, path = ctx.dirname })[1] ~= nil
-  end
+  return function(_, ctx) return vim.fs.find(files, { upward = true, path = ctx.dirname })[1] ~= nil end
 end
 
 M.treesitter = {
   -- robotics / systems
-  "c", "cpp", "cuda", "cmake", "make", "ninja", "python", "rust", "go", "gomod", "gosum",
-  "xml", "yaml", "toml", "json", "proto",
+  "c",
+  "cpp",
+  "cuda",
+  "cmake",
+  "make",
+  "ninja",
+  "python",
+  "rust",
+  "go",
+  "gomod",
+  "gosum",
+  "xml",
+  "yaml",
+  "toml",
+  "json",
+  "proto",
   -- web
-  "javascript", "typescript", "tsx", "html", "css", "scss", "graphql", "prisma", "svelte", "vue",
+  "javascript",
+  "typescript",
+  "tsx",
+  "html",
+  "css",
+  "scss",
+  "graphql",
+  "prisma",
+  "svelte",
+  "vue",
   -- mobile
-  "dart", "swift", "kotlin",
+  "dart",
+  "swift",
+  "kotlin",
   -- ops / shell
-  "bash", "dockerfile", "sql", "nginx", "terraform", "hcl",
+  "bash",
+  "dockerfile",
+  "sql",
+  "nginx",
+  "terraform",
+  "hcl",
   -- editor / docs
-  "lua", "luadoc", "vim", "vimdoc", "query", "regex", "markdown", "markdown_inline",
-  "diff", "gitcommit", "git_rebase", "gitignore", "git_config", "comment",
+  "lua",
+  "luadoc",
+  "vim",
+  "vimdoc",
+  "query",
+  "regex",
+  "markdown",
+  "markdown_inline",
+  "diff",
+  "gitcommit",
+  "git_rebase",
+  "gitignore",
+  "git_config",
+  "comment",
 }
 
 function M.servers()
@@ -123,15 +161,11 @@ function M.servers()
 
     -- Data / config
     jsonls = {
-      before_init = function(_, config)
-        config.settings.json.schemas = require("schemastore").json.schemas()
-      end,
+      before_init = function(_, config) config.settings.json.schemas = require("schemastore").json.schemas() end,
       settings = { json = { validate = { enable = true } } },
     },
     yamlls = {
-      before_init = function(_, config)
-        config.settings.yaml.schemas = require("schemastore").yaml.schemas()
-      end,
+      before_init = function(_, config) config.settings.yaml.schemas = require("schemastore").yaml.schemas() end,
       settings = {
         redhat = { telemetry = { enabled = false } },
         yaml = {
@@ -225,16 +259,23 @@ M.linters_by_ft = {
 
 M.mason_tools = {
   -- formatters
-  "stylua", "prettierd", "biome", "shfmt", "gersemi", "taplo", "goimports", "gofumpt",
+  "stylua",
+  "prettierd",
+  "biome",
+  "shfmt",
+  "gersemi",
+  "taplo",
+  "goimports",
+  "gofumpt",
   -- linters
-  "hadolint", "shellcheck",
+  "hadolint",
+  "shellcheck",
   -- debug adapters
-  "codelldb", "debugpy",
+  "codelldb",
+  "debugpy",
 }
 
 -- clang-format only from Mason when the system has none
-if not has("clang-format") then
-  table.insert(M.mason_tools, "clang-format")
-end
+if not has("clang-format") then table.insert(M.mason_tools, "clang-format") end
 
 return M

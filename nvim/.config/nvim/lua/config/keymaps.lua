@@ -53,12 +53,18 @@ map("n", "<leader><tab>d", "<cmd>tabclose<cr>", { desc = "Close tab" })
 
 -- diagnostics
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Line diagnostics" })
-map("n", "]e", function()
-  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true })
-end, { desc = "Next error" })
-map("n", "[e", function()
-  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true })
-end, { desc = "Prev error" })
+map(
+  "n",
+  "]e",
+  function() vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR, float = true }) end,
+  { desc = "Next error" }
+)
+map(
+  "n",
+  "[e",
+  function() vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR, float = true }) end,
+  { desc = "Prev error" }
+)
 
 -- quickfix
 map("n", "]q", "<cmd>cnext<cr>zz", { desc = "Next quickfix" })

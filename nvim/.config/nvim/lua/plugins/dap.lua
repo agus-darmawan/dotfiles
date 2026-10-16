@@ -14,7 +14,11 @@ return {
       { "<F11>", function() require("dap").step_into() end, desc = "Debug: step into" },
       { "<F12>", function() require("dap").step_out() end, desc = "Debug: step out" },
       { "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
-      { "<leader>dB", function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end, desc = "Conditional breakpoint" },
+      {
+        "<leader>dB",
+        function() require("dap").set_breakpoint(vim.fn.input("Condition: ")) end,
+        desc = "Conditional breakpoint",
+      },
       { "<leader>dc", function() require("dap").continue() end, desc = "Continue / start" },
       { "<leader>dC", function() require("dap").run_to_cursor() end, desc = "Run to cursor" },
       { "<leader>dl", function() require("dap").run_last() end, desc = "Run last" },
@@ -53,9 +57,7 @@ return {
             vim.notify("Nothing found — build with RelWithDebInfo first (cb / <leader>rb)", vim.log.levels.WARN)
             return coroutine.resume(co, dap.ABORT)
           end
-          vim.ui.select(items, { prompt = prompt }, function(choice)
-            coroutine.resume(co, choice or dap.ABORT)
-          end)
+          vim.ui.select(items, { prompt = prompt }, function(choice) coroutine.resume(co, choice or dap.ABORT) end)
         end)
       end
 
@@ -64,9 +66,7 @@ return {
           name = "ROS2: launch node from install/",
           type = "codelldb",
           request = "launch",
-          program = function()
-            return pick(require("util.ros").executables(), "ROS2 executable")
-          end,
+          program = function() return pick(require("util.ros").executables(), "ROS2 executable") end,
           args = function()
             local a = vim.fn.input("Args (e.g. --ros-args -p rate:=10): ")
             return vim.split(a, " ", { trimempty = true })
@@ -78,9 +78,7 @@ return {
           name = "Launch executable (path)",
           type = "codelldb",
           request = "launch",
-          program = function()
-            return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file")
-          end,
+          program = function() return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/", "file") end,
           cwd = "${workspaceFolder}",
         },
         {

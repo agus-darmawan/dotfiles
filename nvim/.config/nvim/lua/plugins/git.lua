@@ -4,20 +4,30 @@ return {
     event = { "BufReadPre", "BufNewFile" },
     opts = {
       signs = {
-        add = { text = "▎" }, change = { text = "▎" }, delete = { text = "" },
-        topdelete = { text = "" }, changedelete = { text = "▎" }, untracked = { text = "▎" },
+        add = { text = "▎" },
+        change = { text = "▎" },
+        delete = { text = "" },
+        topdelete = { text = "" },
+        changedelete = { text = "▎" },
+        untracked = { text = "▎" },
       },
       current_line_blame_opts = { delay = 400 },
       on_attach = function(buf)
         local gs = require("gitsigns")
-        local function map(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = buf, desc = desc })
-        end
+        local function map(mode, l, r, desc) vim.keymap.set(mode, l, r, { buffer = buf, desc = desc }) end
         map("n", "]h", function()
-          if vim.wo.diff then vim.cmd.normal({ "]c", bang = true }) else gs.nav_hunk("next") end
+          if vim.wo.diff then
+            vim.cmd.normal({ "]c", bang = true })
+          else
+            gs.nav_hunk("next")
+          end
         end, "Next hunk")
         map("n", "[h", function()
-          if vim.wo.diff then vim.cmd.normal({ "[c", bang = true }) else gs.nav_hunk("prev") end
+          if vim.wo.diff then
+            vim.cmd.normal({ "[c", bang = true })
+          else
+            gs.nav_hunk("prev")
+          end
         end, "Prev hunk")
         map({ "n", "x" }, "<leader>ghs", ":Gitsigns stage_hunk<cr>", "Stage hunk")
         map({ "n", "x" }, "<leader>ghr", ":Gitsigns reset_hunk<cr>", "Reset hunk")
