@@ -15,13 +15,13 @@ gui:
     unstagedChangesColor: ["#f38ba8"]
     defaultFgColor: ["#cdd6f4"]
     searchingActiveBorderColor: ["#f9e2af"]
-  authorColors:
-    "*": "#b4befe"
+    authorColors:
+      "*": "#b4befe"
 
 git:
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
+  diffRenderers:
+    - colorArg: always
+      command: delta --dark --paging=never
   commit:
     signOff: false
   parseEmoji: true
