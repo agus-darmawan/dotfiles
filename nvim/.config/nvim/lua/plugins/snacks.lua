@@ -1,8 +1,6 @@
 -- snacks.nvim: picker, explorer, terminal, lazygit, dashboard, notifier, toggles …
 local function float_cmd(cmd)
-  return function()
-    Snacks.terminal(cmd, { win = { style = "float", width = 0.92, height = 0.92, border = "rounded" } })
-  end
+  return function() Snacks.terminal(cmd, { win = { style = "float", width = 0.92, height = 0.92, border = "rounded" } }) end
 end
 
 return {
@@ -32,14 +30,14 @@ return {
           files = { hidden = true },
           grep = { hidden = true },
         },
-        exclude = { "node_modules", ".git", "build", "install", "log", ".dart_tool" },
+        exclude = { "node_modules", ".git", ".cache", "build", "install", "log", ".dart_tool" },
       },
       terminal = { win = { style = "terminal" } },
       dashboard = {
         enabled = true,
         preset = {
           header = table.concat({
-            "█████╗  ██████╗ ██╗   ██╗███████╗",
+            " █████╗  ██████╗ ██╗   ██╗███████╗",
             "██╔══██╗██╔════╝ ██║   ██║██╔════╝",
             "███████║██║  ███╗██║   ██║███████╗",
             "██╔══██║██║   ██║██║   ██║╚════██║",
@@ -54,7 +52,12 @@ return {
             { icon = " ", key = "p", desc = "Projects", action = ":lua Snacks.picker.projects()" },
             { icon = " ", key = "s", desc = "Restore Session", section = "session" },
             { icon = "󰊢 ", key = "l", desc = "Lazygit", action = ":lua Snacks.lazygit()" },
-            { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.picker.files({ cwd = vim.fn.stdpath('config') })" },
+            {
+              icon = " ",
+              key = "c",
+              desc = "Config",
+              action = ":lua Snacks.picker.files({ cwd = vim.fn.stdpath('config') })",
+            },
             { icon = "󰒲 ", key = "L", desc = "Lazy", action = ":Lazy" },
             { icon = " ", key = "q", desc = "Quit", action = ":qa" },
           },
@@ -110,8 +113,16 @@ return {
       -- terminal & tools
       { "<C-/>", function() Snacks.terminal() end, desc = "Terminal", mode = { "n", "t" } },
       { "<C-_>", function() Snacks.terminal() end, desc = "which_key_ignore", mode = { "n", "t" } },
-      { "<leader>tt", function() Snacks.terminal(nil, { win = { style = "float", border = "rounded" } }) end, desc = "Float terminal" },
-      { "<leader>tv", function() Snacks.terminal(nil, { win = { position = "right", width = 0.4 } }) end, desc = "Side terminal" },
+      {
+        "<leader>tt",
+        function() Snacks.terminal(nil, { win = { style = "float", border = "rounded" } }) end,
+        desc = "Float terminal",
+      },
+      {
+        "<leader>tv",
+        function() Snacks.terminal(nil, { win = { position = "right", width = 0.4 } }) end,
+        desc = "Side terminal",
+      },
       { "<leader>td", float_cmd("lazydocker"), desc = "Lazydocker" },
       { "<leader>tb", float_cmd("btop"), desc = "btop" },
       { "<leader>ty", float_cmd("yazi"), desc = "Yazi" },
@@ -142,12 +153,14 @@ return {
           Snacks.toggle.treesitter():map("<leader>uT")
           Snacks.toggle.indent():map("<leader>ug")
           Snacks.toggle.dim():map("<leader>uD")
-          Snacks.toggle.new({
-            id = "autoformat",
-            name = "Format on save",
-            get = function() return vim.g.autoformat end,
-            set = function(state) vim.g.autoformat = state end,
-          }):map("<leader>uf")
+          Snacks.toggle
+            .new({
+              id = "autoformat",
+              name = "Format on save",
+              get = function() return vim.g.autoformat end,
+              set = function(state) vim.g.autoformat = state end,
+            })
+            :map("<leader>uf")
         end,
       })
     end,

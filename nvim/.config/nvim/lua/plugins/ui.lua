@@ -1,10 +1,15 @@
 return {
-  { "nvim-mini/mini.icons", lazy = true, opts = {}, init = function()
-    package.preload["nvim-web-devicons"] = function()
-      require("mini.icons").mock_nvim_web_devicons()
-      return package.loaded["nvim-web-devicons"]
-    end
-  end },
+  {
+    "nvim-mini/mini.icons",
+    lazy = true,
+    opts = {},
+    init = function()
+      package.preload["nvim-web-devicons"] = function()
+        require("mini.icons").mock_nvim_web_devicons()
+        return package.loaded["nvim-web-devicons"]
+      end
+    end,
+  },
 
   -- statusline (bottom) — tmux owns the top bar
   {
@@ -22,13 +27,13 @@ return {
         local pkg = vim.b.ros_pkg
         return pkg and ("󰚩 " .. pkg) or ""
       end
-      local function autoformat()
-        return vim.g.autoformat and "" or "󰉥 off"
-      end
+      -- hide the extras when nvim sits in a narrow tmux split
+      local function wide() return vim.o.columns > 90 end
+      local function autoformat() return vim.g.autoformat and "" or "󰉥 off" end
 
       return {
         options = {
-          theme = "catppuccin",
+          theme = pcall(require, "lualine.themes.catppuccin-mocha") and "catppuccin-mocha" or "catppuccin",
           globalstatus = true,
           component_separators = { left = "", right = "" },
           section_separators = { left = "", right = "" },
@@ -43,12 +48,15 @@ return {
             { "filename", path = 1, symbols = { modified = " ●", readonly = " 󰌾" } },
           },
           lualine_x = {
-            { ros_pkg, color = { fg = "#94e2d5" } },
+            { ros_pkg, cond = wide, color = { fg = "#94e2d5" } },
             { autoformat, color = { fg = "#f38ba8" } },
-            { function() return require("dap").status() end,
+            {
+              function() return require("dap").status() end,
               cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-              icon = " ", color = { fg = "#f9e2af" } },
-            { lsp_names, color = { fg = "#89b4fa" } },
+              icon = " ",
+              color = { fg = "#f9e2af" },
+            },
+            { lsp_names, cond = wide, color = { fg = "#89b4fa" } },
           },
           lualine_y = { "progress" },
           lualine_z = { "location" },
@@ -105,7 +113,7 @@ return {
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
         { "<leader>q", group = "quit/session" },
-        { "<leader>r", group = "ros2" },
+        { "<leader>r", group = "ros2", icon = { icon = "󰚩", color = "cyan" } },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "terminal/tools" },
         { "<leader>u", group = "ui toggles" },

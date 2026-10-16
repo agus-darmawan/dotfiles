@@ -30,6 +30,12 @@ return {
       signature = { enabled = true, window = { border = "rounded" } },
       sources = {
         default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+          -- no snippet noise right after `.`, `->` or `::`
+          snippets = {
+            should_show_items = function(ctx) return ctx.trigger.initial_kind ~= "trigger_character" end,
+          },
+        },
       },
       cmdline = {
         enabled = true,

@@ -27,7 +27,6 @@ return {
         debugger = { enabled = true },
         lsp = {
           capabilities = require("blink.cmp").get_lsp_capabilities(),
-          color = { enabled = true },
           settings = {
             showTodos = true,
             completeFunctionCalls = true,
