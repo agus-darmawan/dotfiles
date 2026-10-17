@@ -77,7 +77,10 @@ ok "fzf $(fzf --version | cut -d' ' -f1)"
 step "starship, zoxide, lazygit"
 command -v starship >/dev/null ||
   curl -fsSL "https://github.com/starship/starship/releases/latest/download/starship-${ARCH/arm64/aarch64}-unknown-linux-musl.tar.gz" | tar -xz -C "$BIN" starship
-command -v zoxide >/dev/null || curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh >/dev/null 2>&1
+if ! command -v zoxide >/dev/null; then # release tarball: the install script queries the rate-limited API
+  v=$(gh_latest ajeetdsouza/zoxide)
+  curl -fsSL "https://github.com/ajeetdsouza/zoxide/releases/download/v${v}/zoxide-${v}-${ARCH/arm64/aarch64}-unknown-linux-musl.tar.gz" | tar -xz -C "$BIN" zoxide
+fi
 if ! command -v lazygit >/dev/null; then
   v=$(gh_latest jesseduffield/lazygit)
   curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${v}/lazygit_${v}_Linux_${ARCH}.tar.gz" | tar -xz -C "$BIN" lazygit
