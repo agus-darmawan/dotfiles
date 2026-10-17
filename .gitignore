@@ -4,6 +4,5 @@
 *.swp
 
 # runtime data that must not live in the repo
-tmux/.config/tmux/plugins/
 nvim/.config/nvim/.luarc.json
 nvim/.config/nvim/lua/config/local.lua
