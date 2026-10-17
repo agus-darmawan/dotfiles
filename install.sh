@@ -83,6 +83,15 @@ if ! infocmp tmux-256color >/dev/null 2>&1; then
   done
 fi
 
+# ── iTerm2 (optional): Catppuccin profile with the Nerd Font ──
+# Dynamic profiles are read from this folder; copied (not linked) so iTerm2 sees changes.
+if [[ $(uname -s) == Darwin ]]; then
+  ITERM_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+  mkdir -p "$ITERM_DIR"
+  cp "$DOTFILES/iterm2/dotfiles.json" "$ITERM_DIR/dotfiles.json"
+  ok "iTerm2 profile 'dotfiles (Catppuccin Mocha)' installed"
+fi
+
 # ── SSH skeleton ─────────────────────────────────────────────
 step "SSH"
 mkdir -p "$HOME/.ssh/sockets" "$HOME/.ssh/config.d"

@@ -49,6 +49,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 
 **Terminal and tmux**
 - Ghostty with Catppuccin Mocha, JetBrainsMono Nerd Font and a drop-down quick terminal on `` cmd+` ``.
+- Prefer iTerm2? `install.sh` adds a matching profile: Preferences → Profiles → **dotfiles (Catppuccin Mocha)** → *Set as Default*.
 - tmux status bar on top: session, windows, Cloudflare Tunnel, running containers, CPU, RAM, IP, battery, time.
 - Popups for lazygit, lazydocker and btop; fuzzy pickers for projects, sessions, SSH hosts and containers.
 - `dev <host>` opens a session on a container or robot over SSH (windows code, build, run).
