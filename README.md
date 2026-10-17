@@ -27,8 +27,8 @@ working on ROS 1 / ROS 2 inside Docker containers and robots over SSH.**
 ---
 
 One repository for the whole terminal: the emulator, the multiplexer, the shell and the editor share
-one theme and one font, and know about each other. The prompt and every tab title say where you
-are (`agus@macbook:~/apps/molly`, `dev@humble:~/ros2_ws`), `Ctrl-h/j/k/l` moves between tmux panes
+one theme and one font, and know about each other. The prompt is a plain ASCII `folder branch >`,
+the tab and tmux window titles say which host you are on, `Ctrl-h/j/k/l` moves between tmux panes
 and Neovim splits, and yanks reach the macOS clipboard from inside containers and SSH sessions.
 
 ## Install

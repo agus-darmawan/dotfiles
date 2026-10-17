@@ -6,18 +6,20 @@ Aliases and functions from [`zsh/.config/zsh/`](../zsh/.config/zsh/). Key bindin
 ## Prompt and title
 
 ```text
-agus@macbook:~/apps/molly  main !2  22.11.0
-❯
+molly main*
+>
 
- dev@humble:~/ros2_ws/src/patrol  main 󰚩 humble #42
-❯
+patrol main humble #42 12s
+>
 ```
 
-The first line is always `user@host:path`, then the git branch and changes, the ROS distro with
-`ROS_DOMAIN_ID` or the ROS 1 master (only where ROS is sourced), Python and Node versions, and how
-long the last command took. zsh also sets the window and tab title to
-`host:path`; Ghostty, iTerm2, VS Code and tmux all show it, and a tmux window inside an SSH pane is
-named after the remote host.
+Plain ASCII, no icons: the current folder, the git branch with `*` (modified), `+` (staged), `?`
+(untracked), `^`/`v` (ahead/behind), then the ROS distro with `#ROS_DOMAIN_ID` or `@master` (only
+where ROS is sourced) and how long a command slower than 2 s took. `>` turns red after a failed
+command.
+
+The host is not in the prompt. zsh sets the window and tab title to `host:path`; Ghostty, iTerm2,
+VS Code and tmux all show it, and a tmux window inside an SSH pane is named after the remote host.
 
 ## Line editing
 
