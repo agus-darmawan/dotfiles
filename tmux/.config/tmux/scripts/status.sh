@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # tmux status segments — works on macOS and Linux (dev containers, Jetson).
-# usage: status.sh <cpu|mem|docker|net|battery>
+# usage: status.sh <cpu|mem|docker|tunnel|net|battery>
 
 OS=$(uname -s)
 
@@ -47,6 +47,11 @@ docker_seg() {
   printf " %s " "$(grep -c . <<<"$ids")"
 }
 
+# Cloudflare Tunnel up? (hidden when cloudflared is not running)
+tunnel() {
+  pgrep -x cloudflared >/dev/null 2>&1 && printf " tunnel "
+}
+
 net() {
   local ip=""
   if [[ $OS == Darwin ]]; then
@@ -87,7 +92,8 @@ case "$1" in
   cpu) cpu ;;
   mem) mem ;;
   docker) docker_seg ;;
+  tunnel) tunnel ;;
   net) net ;;
   battery) battery ;;
-  *) echo "usage: $0 <cpu|mem|docker|net|battery>" >&2; exit 1 ;;
+  *) echo "usage: $0 <cpu|mem|docker|tunnel|net|battery>" >&2; exit 1 ;;
 esac

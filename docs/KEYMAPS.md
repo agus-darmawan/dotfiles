@@ -36,6 +36,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `C-a s` | sessions (`ctrl-x` kills) |
 | `C-a S` | SSH hosts (enter window · `ctrl-v` vsplit · `ctrl-s` split · `ctrl-o` here) |
 | `C-a d` | docker containers → shell |
+| `C-a a` | web apps → open one in a new window (`app`) |
 | `C-a g` | lazygit (current dir) |
 | `C-a D` | lazydocker |
 | `C-a b` | btop |

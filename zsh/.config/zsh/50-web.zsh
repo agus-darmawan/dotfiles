@@ -104,7 +104,9 @@ app() {
     "")
       [[ -f $APPS_FILE ]] || { app ls; return 1 }
       local pick
-      pick=$(app ls | fzf --prompt='app ❯ ' --height=50% \
+      local -a look=(--height=50%)
+      [[ -n $TMUX_POPUP ]] && look=(--height=100% --border=none)  # C-a a popup
+      pick=$(app ls | fzf --prompt='app ❯ ' $look \
         --header='enter: open in a new tmux window' \
         --preview='d=$(echo {} | awk "{print \$3}"); eval ls -la "$d" 2>/dev/null | head -30' | awk '{print $1}') || return
       [[ -n $pick ]] && app open $pick
