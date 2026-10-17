@@ -11,7 +11,6 @@ brew "ncurses"            # tmux-256color terminfo for macOS
 brew "tmuxp"
 brew "starship"
 brew "zoxide"
-brew "atuin"
 brew "fzf"
 brew "stow"
 
@@ -23,20 +22,12 @@ brew "ripgrep"
 brew "jq"
 brew "yq"
 brew "btop"
-brew "yazi"
-brew "tlrc"
-brew "fastfetch"
-brew "wget"
 
 # ── Editor & toolchains ──────────────────────────────────────
 brew "neovim"
 brew "tree-sitter-cli"
 brew "node"
 brew "python"
-brew "uv"
-brew "cmake"
-brew "ninja"
-brew "swiftformat"
 
 # ── Git ──────────────────────────────────────────────────────
 brew "git"

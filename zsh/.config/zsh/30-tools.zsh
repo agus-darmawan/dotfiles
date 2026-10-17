@@ -25,17 +25,5 @@ fi
 # zoxide: `cd` learns your dirs, `cdi` = interactive
 (( $+commands[zoxide] )) && eval "$(zoxide init zsh --cmd cd)"
 
-# atuin: ctrl-r full-screen history search (synced optional)
-(( $+commands[atuin] )) && eval "$(atuin init zsh --disable-up-arrow)"
-
 # starship prompt
 (( $+commands[starship] )) && eval "$(starship init zsh)"
-
-# yazi: `y` changes dir to where you quit
-y() {
-  local tmp cwd
-  tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-  yazi "$@" --cwd-file="$tmp"
-  if cwd="$(<"$tmp")" && [[ -n $cwd && $cwd != $PWD ]]; then builtin cd -- "$cwd"; fi
-  rm -f -- "$tmp"
-}
