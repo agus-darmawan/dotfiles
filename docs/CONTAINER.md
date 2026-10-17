@@ -11,8 +11,8 @@ or a robot, where zsh, Neovim and the ROS helpers from this repo are installed.
 | Container `noetic` | zsh, Neovim, catkin, `rostopic` and friends |
 | Robot | zsh, Neovim, its own ROS |
 
-Every prompt starts with `user@host:path`, and the tmux window is named after the host, so it is
-always clear where a pane is.
+The tab title is `host:path` and the tmux window is named after the host, so it is always clear
+where a pane is; the prompt itself only shows the folder.
 
 - [1. The container](#1-the-container)
 - [2. Install the dotfiles inside](#2-install-the-dotfiles-inside)

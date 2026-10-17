@@ -29,8 +29,8 @@ alias deploy='ssh homeserver "cd ~/apps/molly && git pull && pm2 restart molly"'
 - Shared aliases go into [`zsh/.config/zsh/40-aliases.zsh`](../zsh/.config/zsh/40-aliases.zsh).
   Files in `zsh/.config/zsh/` load in name order.
 - Prompt: [`starship/.config/starship.toml`](../starship/.config/starship.toml)
-  ([module reference](https://starship.rs/config/)). The first line is `user@host:path` on purpose:
-  keep `$username$hostname$directory` together if you change it.
+  ([module reference](https://starship.rs/config/)). It is kept ASCII-only on purpose; add
+  `$hostname` to `format` if you want the host back in the prompt.
 - More zsh plugins: add `plug <github-user>/<repo>` to `zsh/.config/zsh/20-plugins.zsh`.
 
 ## tmux

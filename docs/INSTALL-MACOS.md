@@ -74,8 +74,8 @@ or Docker Desktop yourself, or uncomment one of them in the `Brewfile`.
    After that, `` cmd+` `` drops a terminal from the top of the screen in any app.
 3. **Default shell.** macOS already uses zsh. If `echo $SHELL` shows something else:
    `chsh -s /bin/zsh`.
-4. **The prompt** always shows where you are: `agus@macbook:~/apps/molly`. The same `host:path`
-   is the window and tab title, so you can tell the Mac, a container and a robot apart at a glance.
+4. **The prompt** is plain ASCII: the current folder and the git branch (`molly main*`, then `>`).
+   The window and tab title is `host:path`, so you can tell the Mac, a container and a robot apart.
 5. **Start tmux** with `t` (session `main`). The status bar is on top. tmux has no plugins: nothing
    to install inside it.
 6. **Start Neovim** with `nvim`. In the background Mason installs the language servers and tools,
