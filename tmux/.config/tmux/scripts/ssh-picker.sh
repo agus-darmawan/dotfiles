@@ -29,5 +29,5 @@ fi
 case "$key" in
   ctrl-v) tmux split-window -h "ssh $host" ;;
   ctrl-s) tmux split-window -v "ssh $host" ;;
-  *) tmux new-window -n "󰣀 $host" "ssh $host" ;;
+  *) tmux new-window -n "$host" "ssh $host" ;;
 esac

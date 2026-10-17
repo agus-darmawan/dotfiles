@@ -53,7 +53,7 @@ Mulai dengan `t`, yang membuat atau attach ke session `main`. Status bar ada **d
 
 | Kiri | Kanan |
 |---|---|
-| nama session, lalu window (`1 molly`, `2 humble`) | `☁ tunnel` (kalau cloudflared jalan), CPU, RAM, jumlah container, IP, baterai, jam |
+| nama session, lalu window (`1 molly`, `2 humble`) | `tunnel` (kalau cloudflared jalan), `CPU`, `GPU`, `RAM`, suhu CPU, `D`/`U` (kecepatan download/upload), jumlah container, `BAT`, jam. Semua teks biasa, tanpa ikon |
 
 Window otomatis dinamai sesuai folder, atau sesuai host kalau pane-nya sedang SSH.
 

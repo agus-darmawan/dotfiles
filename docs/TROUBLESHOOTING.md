@@ -22,7 +22,9 @@ Run `~/dotfiles/tests/smoke.sh` first: it usually points at the broken part.
 | Keys go to the wrong tmux when SSH'd into a host running tmux | `F12` turns the outer tmux off (status bar shows `OFF(F12)`), `F12` again turns it back on |
 | An SSH window keeps the Mac's name instead of the host's | The remote shell doesn't set a title. Hosts with these dotfiles do; elsewhere rename the window with `C-a ,` |
 | Copy from Neovim inside a container doesn't reach the Mac | It uses OSC 52 through tmux: check `clipboard-write = allow` in the Ghostty config (iTerm2: *Applications in terminal may access clipboard*) |
-| A status segment is empty | Run it by hand: `~/.config/tmux/scripts/status.sh cpu` (or `mem`, `docker`, `tunnel`, `net`, `battery`) |
+| A status segment is empty | Run it by hand: `~/.config/tmux/scripts/status.sh cpu` (or `gpu`, `mem`, `temp`, `netspeed`, `docker`, `tunnel`, `battery`) |
+| No temperature in the status bar | It comes from `macmon` (Apple Silicon): `brew install macmon`. The first value shows up a few seconds after tmux starts |
+| `D`/`U` (download/upload) missing | It needs two refreshes to compute a speed; it follows the default route's interface (`route -n get default`) |
 
 ## Shell
 

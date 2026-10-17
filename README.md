@@ -53,7 +53,7 @@ Inside a dev container (Ubuntu 20.04+), a Jetson or a robot: `~/dotfiles/contain
 - Ghostty with Catppuccin Mocha, JetBrainsMono Nerd Font and a drop-down quick terminal on `` cmd+` ``.
 - Prefer iTerm2? `install.sh` adds a matching profile: Preferences → Profiles → **dotfiles (Catppuccin Mocha)** → *Set as Default*.
 - The VS Code terminal uses the same shell; add the font and title settings from [vscode/](vscode/README.md).
-- tmux status bar on top: session, windows (named after the folder, or the host in SSH panes), Cloudflare Tunnel, running containers, CPU, RAM, IP, battery, time.
+- tmux status bar on top: session, windows (named after the folder, or the host in SSH panes), Cloudflare Tunnel, CPU, GPU, RAM, CPU temperature, download/upload speed, running containers, battery, time, all plain text.
 - No tmux plugins. Popups for lazygit, lazydocker and btop; fuzzy pickers for projects, sessions, SSH hosts, containers and web apps.
 - `dev <host>` opens a session on a container or robot over SSH (windows code, build, run).
   `F12` hands every key to a tmux running on the robot.

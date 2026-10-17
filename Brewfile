@@ -22,6 +22,7 @@ brew "ripgrep"
 brew "jq"
 brew "yq"
 brew "btop"
+brew "macmon" if Hardware::CPU.arm?   # CPU temperature for the tmux bar (Apple Silicon)
 
 # ── Editor & toolchains ──────────────────────────────────────
 brew "neovim"

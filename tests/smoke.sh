@@ -49,7 +49,11 @@ if [[ -L $HOME/.config/tmux ]]; then
   check "tmux config loads without errors" tmux_config
   check "tmux status segments" bash -c '
     s="$HOME/.config/tmux/scripts/status.sh"
-    [[ -n "$("$s" cpu)" && -n "$("$s" mem)" ]]'
+    [[ -n "$("$s" cpu)" && -n "$("$s" mem)" ]] &&
+      for seg in gpu temp netspeed docker tunnel battery net; do "$s" $seg >/dev/null || exit 1; done'
+  check "tmux download/upload segment" bash -c '
+    s="$HOME/.config/tmux/scripts/status.sh"
+    "$s" netspeed >/dev/null; sleep 1.2; [[ $("$s" netspeed) == D* ]]'
 fi
 check "zsh starts with helpers" zsh -ic 'for f in app tun dev dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
 if [[ -d /opt/ros ]]; then

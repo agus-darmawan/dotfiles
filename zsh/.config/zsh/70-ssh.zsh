@@ -19,7 +19,7 @@ dev() {
 sall() {
   (( $# )) || { echo "usage: sall host1 host2 ..."; return 1; }
   [[ -n $TMUX ]] || { echo "run inside tmux"; return 1; }
-  tmux new-window -n "󰣀 multi" "ssh $1"
+  tmux new-window -n multi "ssh $1"
   shift
   local h
   for h in "$@"; do tmux split-window "ssh $h"; tmux select-layout tiled; done

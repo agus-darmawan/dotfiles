@@ -45,7 +45,7 @@ Keep the repo at `~/dotfiles`: `dot`, `vc` and the docs point there.
 
 | Step | Details |
 |---|---|
-| Homebrew bundle | everything in the [`Brewfile`](../Brewfile): Ghostty, JetBrainsMono Nerd Font, tmux, starship, zoxide, fzf, eza, bat, fd, ripgrep, btop, Neovim + tree-sitter CLI, node, python, git, delta, lazygit, gh, cloudflared, lazydocker. A failed package is reported and the install continues |
+| Homebrew bundle | everything in the [`Brewfile`](../Brewfile): Ghostty, JetBrainsMono Nerd Font, tmux, starship, zoxide, fzf, eza, bat, fd, ripgrep, btop, Neovim + tree-sitter CLI, node, python, git, delta, lazygit, gh, cloudflared, lazydocker, macmon (CPU temperature for the status bar, Apple Silicon). A failed package is reported and the install continues |
 | Backup | moves existing `~/.config/{ghostty,tmux,nvim,zsh,lazygit,git}`, `~/.zshrc` and `~/.config/starship.toml` to `~/.dotfiles-backup/<date-time>/` |
 | Link | symlinks every package with GNU Stow, so editing `~/.config/nvim/...` edits the repo |
 | tmux terminfo | compiles `tmux-256color` into `~/.terminfo` (macOS ships without it) |
