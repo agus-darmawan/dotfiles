@@ -101,12 +101,6 @@ fi
 
 # ── Plugins ──────────────────────────────────────────────────
 if ((DO_PLUGINS)); then
-  step "tmux plugins"
-  TPM="$HOME/.local/share/tmux/plugins/tpm"
-  [[ -d $TPM ]] || git clone -q --depth=1 https://github.com/tmux-plugins/tpm "$TPM"
-  TMUX_PLUGIN_MANAGER_PATH="$HOME/.local/share/tmux/plugins/" "$TPM/bin/install_plugins" >/dev/null 2>&1 &&
-    ok "tpm plugins" || warn "open tmux and press prefix + I"
-
   step "zsh plugins"
   zsh -ic 'exit 0' >/dev/null 2>&1 && ok "fzf-tab, autosuggestions, syntax-highlighting" || warn "open a new shell to finish"
 

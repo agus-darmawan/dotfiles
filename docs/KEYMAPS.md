@@ -19,7 +19,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 |---|---|
 | `C-a c` / `C-a C` | new window (same dir) / named after dir |
 | `C-a \|` (or `C-a \`) · `C-a -` | split right · split down |
-| `C-h/j/k/l` | move pane (seamless with Neovim) |
+| `C-h/j/k/l` | move pane (seamless with Neovim; in SSH panes the key goes to the remote side) |
 | `C-a H/J/K/L` | resize pane (repeatable) |
 | `C-a m` | zoom pane |
 | `C-a Tab` | last window |
@@ -30,8 +30,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `C-a v` | copy mode (`v` select, `C-v` block, `y` copy → Mac clipboard) |
 | `C-a C-l` | clear screen |
 | `C-a r` | reload config |
-| `C-a I` / `C-a U` | install / update plugins |
-| `C-a C-s` / `C-a C-r` | save / restore sessions (auto every 10 min) |
+| `C-a h/j/k/l` | move pane (always tmux, also from SSH panes) |
 | **Popups** | |
 | `C-a f` | sessionizer (projects) |
 | `C-a s` | sessions (`ctrl-x` kills) |
