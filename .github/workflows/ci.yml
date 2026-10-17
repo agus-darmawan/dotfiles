@@ -47,6 +47,23 @@ jobs:
           print("ok")
           EOF
 
+
+  manual:
+    name: user manual (LaTeX)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: TeX Live
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends latexmk texlive-latex-recommended \
+            texlive-latex-extra texlive-fonts-recommended >/dev/null
+      - name: build docs/manual/manual.pdf
+        run: make -C docs/manual
+      - uses: actions/upload-artifact@v4
+        with:
+          name: user-manual
+          path: docs/manual/manual.pdf
   macos:
     name: macOS install
     runs-on: macos-latest
