@@ -55,7 +55,7 @@ NVIM_OFFLINE=1 nvim --headless "+lua dofile('$DOTFILES/tests/smoke.lua')" >"$NVI
 cat "$NVIM_LOG"
 if grep -q "✗" "$NVIM_LOG"; then
   nvim_rc=1
-  annotate "smoke: neovim" "$(grep "✗" "$NVIM_LOG")"
+  annotate "smoke: neovim" "$(grep -A8 "✗" "$NVIM_LOG" | head -60)"
 elif ((nvim_rc)); then
   annotate "smoke: neovim" "$(tail -15 "$NVIM_LOG")"
 fi
