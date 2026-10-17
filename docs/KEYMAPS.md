@@ -58,7 +58,7 @@ Leader = `Space` 路 tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait 鈥
 | `Space sw` | grep word / selection |
 | `Space sb` `sh` `sk` `sc` | buffer lines 路 help 路 keymaps 路 commands |
 | `Space sd` `sD` | diagnostics 路 buffer diagnostics |
-| `Space su` `sr` `st` | undo tree 路 resume picker 路 TODOs |
+| `Space su` `sr` `sq` | undo history 路 resume picker 路 quickfix |
 
 ### Code
 | Keys | Action |
@@ -92,8 +92,7 @@ Leader = `Space` 路 tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait 鈥
 | Keys | Action |
 |---|---|
 | `S-h` / `S-l` | prev / next buffer |
-| `Space 1..5` | go to buffer N |
-| `Space bd` `bD` `bo` `bp` | delete 路 delete others 路 close others 路 pin |
+| `Space bd` `bD` `bb` | delete 路 delete others 路 alternate buffer |
 | `Space -` / `Space \|` | split below / right |
 | `Space wd` / `Space wo` | close window / only |
 | `C-arrows` | resize |
