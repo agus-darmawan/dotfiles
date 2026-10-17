@@ -62,12 +62,12 @@ jobs:
         run: ~/dotfiles/tests/smoke.sh
 
   container:
-    name: ROS 2 container (${{ matrix.distro }})
+    name: ROS container (${{ matrix.distro }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        distro: [humble, jazzy]
+        distro: [noetic, humble, jazzy]  # ROS 1 on Ubuntu 20.04, ROS 2 on 22.04 / 24.04
     container: ros:${{ matrix.distro }}
     steps:
       - uses: actions/checkout@v7
@@ -75,5 +75,5 @@ jobs:
         run: ./container/install.sh
       - name: smoke test
         run: PATH="$HOME/.local/bin:$PATH" ./tests/smoke.sh
-      - name: ROS 2 integration
+      - name: ROS integration
         run: PATH="$HOME/.local/bin:$PATH" ./tests/ros.sh
