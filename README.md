@@ -69,7 +69,8 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
   `compile_commands.json` is merged and clangd restarts.
 - Pickers for topics, nodes, services, launch files and executables; `ros2 interface show` for the
   message under the cursor; debug a node from `install/` with codelldb.
-- Shell helpers inside containers and on robots (never on the Mac): `ros`, `rosdomain`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`, `rif`.
+- Shell helpers inside containers and on robots (never on the Mac), for ROS 2 (colcon) and ROS 1 (catkin):
+  `ros`, `rosdomain`/`rosmaster`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`.
 
 <img src="assets/ros-build.gif" alt="colcon build from Neovim: error in quickfix, fix, rebuild" width="100%">
 
