@@ -47,7 +47,7 @@ check "tmux config loads without errors" tmux_config
 check "tmux status segments" bash -c '
   s="$HOME/.config/tmux/scripts/status.sh"
   [[ -n "$("$s" cpu)" && -n "$("$s" mem)" ]]'
-check "zsh starts with helpers" zsh -ic 'for f in app dev dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
+check "zsh starts with helpers" zsh -ic 'for f in app tun dev dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
 if [[ -d /opt/ros ]]; then
   check "zsh ROS helpers" zsh -ic 'for f in ros rosws cb cbp ct rtopic rnode; do whence -w $f >/dev/null || exit 1; done'
 else

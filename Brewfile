@@ -34,7 +34,8 @@ brew "git-delta"
 brew "lazygit"
 brew "gh"
 
-# ── Containers ───────────────────────────────────────────────
+# ── Web: tunnels, containers ─────────────────────────────────
+brew "cloudflared"
 brew "lazydocker"
 # cask "orbstack"        # lighter/faster Docker runtime for macOS
 # cask "docker-desktop"
