@@ -17,10 +17,24 @@ _ros_detect() {
 }
 
 rosws() {
-  local d=${1:-$PWD}
+  local d=${1:-$PWD} p pkg=
+  # inside a package: the workspace is the folder whose src/ holds it (also before the first build)
+  p=$d
+  while [[ $p != / ]]; do
+    [[ -f $p/package.xml ]] && { pkg=$p; break }
+    p=${p:h}
+  done
+  local -a pkgs
   while [[ $d != / ]]; do
-    if [[ -d $d/src ]] && [[ -d $d/install || -d $d/build || -d $d/devel || -d $d/.catkin_tools || -f $d/.catkin_workspace ]]; then
-      echo $d; return 0
+    if [[ -d $d/src ]]; then
+      if [[ -n $pkg ]]; then
+        [[ $pkg == $d/src/* ]] && { echo $d; return 0 }
+      else
+        pkgs=($d/src/*/package.xml(N) $d/src/*/*/package.xml(N))
+        if (( $#pkgs )) || [[ -d $d/install || -d $d/build || -d $d/devel || -d $d/.catkin_tools || -f $d/.catkin_workspace ]]; then
+          echo $d; return 0
+        fi
+      fi
     fi
     d=${d:h}
   done
