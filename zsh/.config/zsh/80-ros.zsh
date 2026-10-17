@@ -1,128 +1,139 @@
-# ── ROS 2 (only where /opt/ros exists: containers, robots — never the Mac) ──
-# Base ROS is auto-sourced (set ROS_AUTO=0 to skip).
-#   ros [distro]      source base + nearest workspace overlay
-#   rosws             print nearest colcon workspace root
-#   rosdomain <id>    set ROS_DOMAIN_ID (shows in the prompt)
-#   rmw <cyclone|fast|zenoh>
-#   cb / cbp / cbu / ct / rcl   colcon helpers (always run from ws root)
-#   rtopic rnode rsrv rif rparam   fzf pickers
+# ── ROS 1 + ROS 2 (only where /opt/ros exists: containers, robots) ──
+#   ros [distro]       source the distro + the nearest workspace overlay
+#   rosws              print the workspace root (colcon or catkin)
+#   cb / cbp <pkg>     build workspace / packages (colcon for ROS 2, catkin for ROS 1)
+#   ct <pkg>           run tests
+#   rcl                remove build/ install/ devel/ log/
+#   rosdomain <id>     ROS 2: ROS_DOMAIN_ID
+#   rosmaster <host>   ROS 1: ROS_MASTER_URI (+ ROS_IP of this machine)
+#   rtopic rnode       fzf pickers (rostopic / ros2 topic …)
 [[ -d /opt/ros ]] || return 0
 
-_ros_detect_distro() {
+_ros_detect() {
   local d
-  for d in ${ROS_DISTRO:-} jazzy humble iron rolling kilted; do
-    [[ -n $d && -f /opt/ros/$d/setup.zsh ]] && { echo $d; return; }
+  for d in ${ROS_DISTRO:-} jazzy humble iron rolling kilted noetic melodic; do
+    [[ -n $d && -f /opt/ros/$d/setup.zsh ]] && { echo $d; return }
   done
 }
 
 rosws() {
   local d=${1:-$PWD}
   while [[ $d != / ]]; do
-    [[ -d $d/src && ( -d $d/install || -d $d/build || -f $d/colcon.meta ) ]] && { echo $d; return 0; }
+    if [[ -d $d/src ]] && [[ -d $d/install || -d $d/build || -d $d/devel || -d $d/.catkin_tools || -f $d/.catkin_workspace ]]; then
+      echo $d; return 0
+    fi
     d=${d:h}
   done
   return 1
 }
 
 ros() {
-  local distro=${1:-$(_ros_detect_distro)}
-  [[ -f /opt/ros/$distro/setup.zsh ]] || { print -P "%F{red}✗ ROS '$distro' not found in /opt/ros%f"; return 1; }
+  local distro=${1:-$(_ros_detect)}
+  [[ -f /opt/ros/$distro/setup.zsh ]] || { print -P "%F{red}✗ no ROS '$distro' in /opt/ros%f"; return 1 }
   source /opt/ros/$distro/setup.zsh
-  local ws; ws=$(rosws) && [[ -f $ws/install/setup.zsh ]] && {
-    source $ws/install/setup.zsh
-    print -P "%F{cyan}󰚩 $distro%f + overlay %F{green}${ws/#$HOME/~}%f"
-  } || print -P "%F{cyan}󰚩 $distro%f"
+  local ws overlay
+  ws=$(rosws)
+  for overlay in $ws/install/setup.zsh $ws/devel/setup.zsh; do
+    [[ -n $ws && -f $overlay ]] && { source $overlay; print -P "%F{cyan}󰚩 $distro%f + %F{green}${overlay/#$HOME/~}%f"; return }
+  done
+  print -P "%F{cyan}󰚩 $distro%f"
 }
 
-rosdomain() {
-  export ROS_DOMAIN_ID=${1:?usage: rosdomain <0-101>}
-  print -P "%F{cyan}ROS_DOMAIN_ID=%f$ROS_DOMAIN_ID"
+rosdomain() { export ROS_DOMAIN_ID=${1:?usage: rosdomain <0-101>}; echo "ROS_DOMAIN_ID=$ROS_DOMAIN_ID" }
+
+rosmaster() {
+  local host=${1:-localhost}
+  export ROS_MASTER_URI="http://$host:11311"
+  export ROS_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  [[ $host == localhost ]] && unset ROS_MASTER || export ROS_MASTER=$host
+  echo "ROS_MASTER_URI=$ROS_MASTER_URI  ROS_IP=$ROS_IP"
 }
 
-rmw() {
-  case $1 in
-    cyclone) export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp ;;
-    fast)    export RMW_IMPLEMENTATION=rmw_fastrtps_cpp ;;
-    zenoh)   export RMW_IMPLEMENTATION=rmw_zenoh_cpp ;;
-    *) echo "RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-<default>}  (rmw cyclone|fast|zenoh)"; return ;;
-  esac
-  echo "RMW_IMPLEMENTATION=$RMW_IMPLEMENTATION"
-}
-
-# merge build/*/compile_commands.json → ws root (for clangd)
+# build/*/compile_commands.json (+ catkin_make's build/compile_commands.json) → ws root, for clangd
 _ros_compdb() {
-  local ws=${1:-$(rosws)} files
-  files=($ws/build/*/compile_commands.json(N))
+  local ws=$1 files
+  files=($ws/build/*/compile_commands.json(N) $ws/build/compile_commands.json(N))
   (( ${#files} )) || return 0
-  if (( $+commands[jq] )); then
-    jq -s 'add' $files > $ws/compile_commands.json
-  else
-    python3 -c 'import json,sys; print(json.dumps(sum((json.load(open(f)) for f in sys.argv[1:]), [])))' $files > $ws/compile_commands.json
-  fi
-  print -P "%F{8}compile_commands.json: ${#files} pkgs merged%f"
+  python3 -c 'import json,sys; print(json.dumps(sum((json.load(open(f)) for f in sys.argv[1:]), [])))' $files >$ws/compile_commands.json
 }
 
-cb() {
-  local ws; ws=$(rosws) || { print -P "%F{red}✗ not inside a colcon workspace%f"; return 1; }
+_ros_build() { # [packages...]
+  local ws; ws=$(rosws) || { print -P "%F{red}✗ not inside a workspace%f"; return 1 }
+  local -a cm=(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-RelWithDebInfo})
   (
-    cd $ws &&
-    colcon build --symlink-install "$@" \
-      --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE:-RelWithDebInfo}
-  ) && _ros_compdb $ws && [[ -f $ws/install/setup.zsh ]] && source $ws/install/setup.zsh
+    cd $ws || exit 1
+    if [[ ${ROS_VERSION:-2} == 1 ]]; then
+      if (( $+commands[catkin] )) && [[ -d .catkin_tools || ! -d devel ]]; then
+        catkin build "$@" --cmake-args $cm
+      else
+        catkin_make $cm -DCATKIN_WHITELIST_PACKAGES="${(j:;:)@}"
+      fi
+    else
+      colcon build --symlink-install ${@:+--packages-up-to} "$@" --cmake-args $cm
+    fi
+  ) || return
+  _ros_compdb $ws
+  local overlay
+  for overlay in $ws/install/setup.zsh $ws/devel/setup.zsh; do
+    [[ -f $overlay ]] && { source $overlay; break }
+  done
 }
-cbp() { cb --packages-select "$@"; }
-cbu() { cb --packages-up-to "$@"; }
+cb() { _ros_build }
+cbp() { _ros_build "${@:?usage: cbp <pkg> [pkg...]}" }
+
 ct() {
   local ws; ws=$(rosws) || return 1
-  ( cd $ws && colcon test --packages-select "$@" && colcon test-result --verbose )
+  if [[ ${ROS_VERSION:-2} == 1 ]]; then
+    (cd $ws && catkin_make run_tests ${1:+-DCATKIN_WHITELIST_PACKAGES=$1} && catkin_test_results build/test_results)
+  else
+    (cd $ws && colcon test ${1:+--packages-select $1} && colcon test-result --verbose)
+  fi
 }
+
 rcl() {
   local ws; ws=$(rosws) || return 1
-  read -q "?remove build/ install/ log/ in ${ws/#$HOME/~}? [y/N] " && rm -rf $ws/{build,install,log} && echo "\ncleaned"
+  read -q "?remove build/ install/ devel/ log/ in ${ws/#$HOME/~}? [y/N] " &&
+    rm -rf $ws/{build,install,devel,log,.catkin_tools} && echo "\ncleaned"
 }
 
-# pickers ------------------------------------------------------
-_ros_need() { (( $+commands[ros2] )) || { print -P "%F{red}✗ ros2 not found — run 'ros' first%f"; return 1; }; }
-
+# pickers (ROS 1 or 2, depending on the sourced distro)
 rtopic() {
-  _ros_need || return
-  local t; t=$(ros2 topic list -t | fzf --prompt='󰚩 topic ❯ ' \
-    --preview 'ros2 topic info -v {1}' --preview-window=right:55%:wrap | awk '{print $1}') || return
-  [[ -n $t ]] && { print -s "ros2 topic echo $t"; ros2 topic echo $t "$@"; }
+  local t
+  if [[ ${ROS_VERSION:-2} == 1 ]]; then
+    t=$(rostopic list | fzf --prompt='topic ❯ ' --preview 'rostopic info {}') && rostopic echo $t
+  else
+    t=$(ros2 topic list | fzf --prompt='topic ❯ ' --preview 'ros2 topic info -v {}') && ros2 topic echo $t
+  fi
 }
-rhz()   { _ros_need || return; local t; t=$(ros2 topic list | fzf --prompt='hz ❯ ') && ros2 topic hz $t; }
 rnode() {
-  _ros_need || return
-  local n; n=$(ros2 node list | fzf --prompt='󰚩 node ❯ ' --preview 'ros2 node info {}' --preview-window=right:60%) || return
-  ros2 node info $n
-}
-rsrv()  { _ros_need || return; local s; s=$(ros2 service list -t | fzf --prompt='srv ❯ ' | awk '{print $1}') && ros2 service type $s; }
-rif()   { _ros_need || return; local i; i=$(ros2 interface list | sed 's/^ *//' | grep / | fzf --prompt='iface ❯ ' --preview 'ros2 interface show {}') && ros2 interface show $i; }
-rparam() {
-  _ros_need || return
-  local n; n=$(ros2 node list | fzf --prompt='params of ❯ ') || return
-  ros2 param dump $n
+  local n
+  if [[ ${ROS_VERSION:-2} == 1 ]]; then
+    n=$(rosnode list | fzf --prompt='node ❯ ' --preview 'rosnode info {}') && rosnode info $n
+  else
+    n=$(ros2 node list | fzf --prompt='node ❯ ' --preview 'ros2 node info {}') && ros2 node info $n
+  fi
 }
 
-alias rtl='ros2 topic list -t'
-alias rte='ros2 topic echo'
-alias rnl='ros2 node list'
-alias rl='ros2 launch'
-alias rr='ros2 run'
-alias rbag='ros2 bag'
-alias rdoc='ros2 doctor --report'
-alias rqt-graph='ros2 run rqt_graph rqt_graph'
-
-# auto-source base ROS (inside containers / robots)
-if [[ ${ROS_AUTO:-1} == 1 && -z $AMENT_PREFIX_PATH ]]; then
-  _d=$(_ros_detect_distro)
+# source the distro automatically (ROS_AUTO=0 to skip)
+if [[ ${ROS_AUTO:-1} == 1 && -z $ROS_DISTRO$AMENT_PREFIX_PATH$ROS_PACKAGE_PATH ]]; then
+  _d=$(_ros_detect)
   [[ -n $_d ]] && source /opt/ros/$_d/setup.zsh
   unset _d
+elif [[ -n $ROS_DISTRO && -z $ROS_VERSION && -f /opt/ros/$ROS_DISTRO/setup.zsh ]]; then
+  source /opt/ros/$ROS_DISTRO/setup.zsh   # image only set ROS_DISTRO (official ros images)
 fi
 
-# colcon / ros2 argcomplete
-if (( $+commands[register-python-argcomplete3] )); then
+if [[ ${ROS_VERSION:-} == 1 ]]; then
+  alias rl=roslaunch rr=rosrun rtl='rostopic list' rte='rostopic echo' rnl='rosnode list' rbag=rosbag
+else
+  alias rl='ros2 launch' rr='ros2 run' rtl='ros2 topic list -t' rte='ros2 topic echo' rnl='ros2 node list' rbag='ros2 bag'
+fi
+
+# ros2 / colcon tab completion
+if (( $+commands[register-python-argcomplete3] || $+commands[register-python-argcomplete] )); then
   autoload -U bashcompinit && bashcompinit
-  eval "$(register-python-argcomplete3 ros2 2>/dev/null)"
-  eval "$(register-python-argcomplete3 colcon 2>/dev/null)"
+  _rac=${commands[register-python-argcomplete3]:-register-python-argcomplete}
+  (( $+commands[ros2] )) && eval "$($_rac ros2 2>/dev/null)"
+  (( $+commands[colcon] )) && eval "$($_rac colcon 2>/dev/null)"
+  unset _rac
 fi

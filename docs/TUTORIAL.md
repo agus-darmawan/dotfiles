@@ -138,21 +138,20 @@ cp ~/dotfiles/templates/ros2/.clang-format ~/elips_ws/   # opsional: format C++ 
 
 ```bash
 cd ~/elips_ws
-ros                  # source /opt/ros/<distro> + overlay install/ terdekat
-rosdomain 42         # ROS_DOMAIN_ID, langsung tampil di prompt
-rmw cyclone          # ganti RMW
+ros                  # source /opt/ros/<distro> + overlay terdekat (install/ atau devel/)
+rosdomain 42         # ROS 2: ROS_DOMAIN_ID, langsung tampil di prompt
+rosmaster robot      # ROS 1: ROS_MASTER_URI=http://robot:11311 + ROS_IP
 
-cbp elips_patrol     # colcon build 1 package (+ compile_commands untuk clangd)
-cbu elips_patrol     # build package + dependensinya
+cbp elips_patrol     # build package + dependensinya (+ compile_commands untuk clangd)
 cb                   # build semua
 ct elips_patrol      # test + hasilnya
-rcl                  # hapus build/ install/ log/
+rcl                  # hapus build/ install/ devel/ log/
 
 rtopic               # fzf topic → echo (ada preview info)
-rhz                  # fzf topic → hz
 rnode                # fzf node → info
-rif                  # cari dan lihat definisi msg/srv
 ```
+
+Semua perintah di atas otomatis pakai **colcon** di ROS 2 dan **catkin** (`catkin build` kalau ada catkin_tools, kalau tidak `catkin_make`) di ROS 1.
 
 ### Di Neovim
 
