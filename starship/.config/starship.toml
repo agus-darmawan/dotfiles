@@ -1,55 +1,41 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Two-line prompt: context on top, clean input line below.
+# user@host:path  git  [ros]  [node/python]  duration
+# ❯
+# The host is always shown, so you know if you are on the Mac, in a container or on a robot.
 format = """
-$os$container$username$hostname$directory$git_branch$git_state$git_status\
-${env_var.ROS_DISTRO}${env_var.ROS_DOMAIN_ID}\
-$python$nodejs$dart$rust$golang$swift$docker_context$cmd_duration
+$container$username$hostname$directory$git_branch$git_state$git_status\
+${env_var.ROS_DISTRO}${env_var.ROS_DOMAIN_ID}${env_var.ROS_MASTER}\
+$python$nodejs$cmd_duration
 $character"""
 
 palette = "catppuccin_mocha"
 add_newline = true
 command_timeout = 800
 
-[os]
-disabled = false
-style = "fg:lavender"
-format = "[$symbol ]($style)"
-
-[os.symbols]
-Macos = ""
-Ubuntu = ""
-Debian = ""
-Linux = ""
-
 [container]
-symbol = " "
-style = "bold fg:sky"
-format = "[$symbol$name]($style) "
+symbol = " "
+style = "fg:sky"
+format = "[$symbol]($style)"
 
 [username]
-show_always = false
-style_user = "fg:peach"
+show_always = true
+style_user = "bold fg:green"
 style_root = "bold fg:red"
-format = "[$user]($style)"
+format = "[$user@]($style)"
 
 [hostname]
-ssh_only = true
-ssh_symbol = "󰣀 "
-style = "fg:peach"
-format = "[@$hostname$ssh_symbol]($style) "
+ssh_only = false
+style = "bold fg:green"
+format = "[$hostname]($style)[:](fg:overlay1)"
 
 [directory]
 style = "bold fg:blue"
 read_only = " 󰌾"
-truncation_length = 4
+truncation_length = 12
 truncate_to_repo = false
-fish_style_pwd_dir_length = 1
+truncation_symbol = "…/"
 format = "[$path]($style)[$read_only]($read_only_style) "
-
-[directory.substitutions]
-"~/Projects" = "󰲋 "
-"~/dotfiles" = " "
 
 [git_branch]
 symbol = " "
@@ -67,51 +53,31 @@ staged = "+$count"
 untracked = "?$count"
 stashed = "≡"
 
+# ROS: only appears where ROS is sourced (containers, robots)
 [env_var.ROS_DISTRO]
 symbol = "󰚩 "
 style = "fg:teal"
-format = "[$symbol$env_value]($style)"
+format = "[$symbol$env_value ]($style)"
 
 [env_var.ROS_DOMAIN_ID]
 style = "fg:teal"
-format = "[#$env_value]($style) "
+format = "[#$env_value ]($style)"
+
+[env_var.ROS_MASTER]
+style = "fg:teal"
+format = "[@$env_value ]($style)"
 
 [python]
 symbol = " "
 style = "fg:yellow"
 format = "[$symbol$pyenv_prefix($version )(\\($virtualenv\\) )]($style)"
 detect_extensions = []
-detect_files = ["pyproject.toml", "requirements.txt", "setup.py", ".python-version"]
+detect_files = ["pyproject.toml", "requirements.txt", ".python-version"]
 
 [nodejs]
 symbol = " "
 style = "fg:green"
 format = "[$symbol($version )]($style)"
-
-[dart]
-symbol = " "
-style = "fg:blue"
-format = "[$symbol($version )]($style)"
-
-[rust]
-symbol = " "
-style = "fg:peach"
-format = "[$symbol($version )]($style)"
-
-[golang]
-symbol = " "
-style = "fg:sky"
-format = "[$symbol($version )]($style)"
-
-[swift]
-symbol = " "
-style = "fg:peach"
-format = "[$symbol($version )]($style)"
-
-[docker_context]
-symbol = " "
-style = "fg:sky"
-format = "[$symbol$context]($style) "
 
 [cmd_duration]
 min_time = 2000
