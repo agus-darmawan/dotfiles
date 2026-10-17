@@ -16,14 +16,20 @@ cd ~/dotfiles && ./install.sh
 ```
 
 1. Buka **Ghostty**. Font dan theme langsung aktif.
+   Pakai iTerm2? Pilih profile **dotfiles (Catppuccin Mocha)** lalu *Set as Default*. Terminal VS Code: salin [`vscode/settings.json`](../vscode/settings.json) ke settings-mu.
 2. Kasih izin *Accessibility* ke Ghostty (System Settings → Privacy & Security), supaya `` cmd+` `` (quick terminal) bisa dipakai dari mana saja.
-3. Edit IP robot di `~/.ssh/config.d/robots`.
-4. Ketik `nvim` sekali, lalu tunggu Mason selesai install LSP (cek progresnya dengan `:Mason`).
-5. Cek hasil instalasi dengan `~/dotfiles/tests/smoke.sh`. Semua baris harus ✓.
+3. Edit host di `~/.ssh/config.d/containers` (port container) dan `~/.ssh/config.d/robots` (IP robot).
+4. Daftarkan web app-mu di `~/.config/apps` (lihat Hari 8).
+5. Ketik `nvim` sekali, lalu tunggu Mason selesai install LSP (cek progresnya dengan `:Mason`).
+6. Cek hasil instalasi dengan `~/dotfiles/tests/smoke.sh`. Semua baris harus ✓.
+
+Langkah lengkapnya ada di [INSTALL-MACOS.md](INSTALL-MACOS.md).
 
 ---
 
 ## Hari 1 — Shell (zsh)
+
+Baris pertama prompt selalu `user@host:path`, misalnya `agus@macbook:~/apps/molly` atau `dev@humble:~/ros2_ws`. Judul tab dan window juga `host:path`, jadi selalu kelihatan kamu lagi di Mac, di container, atau di robot.
 
 | Coba ini | Hasilnya |
 |---|---|
@@ -45,9 +51,11 @@ cd ~/dotfiles && ./install.sh
 
 Mulai dengan `t`, yang membuat atau attach ke session `main`. Status bar ada **di atas**:
 
-```
-[ main ] 1 netra  2 humble │ cpu 12%  ram 9.1/24G  docker 2  192.168.1.7  85%  01:10
-```
+| Kiri | Kanan |
+|---|---|
+| nama session, lalu window (`1 molly`, `2 humble`) | `☁ tunnel` (kalau cloudflared jalan), CPU, RAM, jumlah container, IP, baterai, jam |
+
+Window otomatis dinamai sesuai folder, atau sesuai host kalau pane-nya sedang SSH.
 
 Latihan:
 
@@ -62,7 +70,7 @@ Latihan:
 
 ### Satu session per project
 
-`C-a f` membuka **sessionizer**: pilih folder project, otomatis jadi session baru dengan nama folder itu. Pindah antar project pakai `C-a s`.
+`C-a f` membuka **sessionizer**: pilih folder project (dari `~/apps`, `~/web`, `~/Projects`, dll.), otomatis jadi session baru dengan nama folder itu. Pindah antar session pakai `C-a s`.
 
 
 ---
@@ -112,7 +120,7 @@ Buka file C++ atau Python, lalu:
 | `Space cr` | rename simbol di seluruh project |
 | `Space cf` | format manual (format on save sudah aktif; matikan dengan `Space uf`) |
 | `]d` / `[d` | diagnostik berikutnya / sebelumnya |
-| `Space xx` | semua error project di panel Trouble |
+| `Space xx` | semua error project di picker diagnostics |
 | `Space ch` | pindah header ↔ source (C++) |
 | `Space uh` | tampilkan inlay hints (tipe parameter) |
 
@@ -122,7 +130,9 @@ Completion: `Tab`/`S-Tab` untuk pilih, `Enter` untuk accept, `C-Space` untuk pak
 
 ---
 
-## Hari 5 — Workflow ROS 2 🤖
+## Hari 5 — Workflow ROS 🤖
+
+ROS cuma ada di container dan robot, tidak di Mac. Masuk dulu dengan `dev humble` (ROS 2) atau `dev noetic` (ROS 1), lihat Hari 6.
 
 ### Setup sekali per workspace
 
@@ -206,11 +216,41 @@ Tmux di robot tetap pakai prefix default `C-b`, sedangkan punyamu `C-a`, jadi ti
 
 ---
 
-## Hari 8 — Web dan Flutter di editor
+## Hari 8 — Web app: app, Cloudflare Tunnel, PM2
+
+### Jalankan app
+
+Daftar app ada di `~/.config/apps`, satu baris per app: nama, folder, dan (opsional) command:
+
+```text
+molly         ~/apps/molly-dashboard
+netra         ~/apps/netra                scripts/local.sh up
+```
+
+| Command / keys | Fungsi |
+|---|---|
+| `app` atau `C-a a` | pilih app, lalu app itu jalan di window tmux baru |
+| `app molly` | sama, tanpa picker |
+| `app ls` | daftar app dan cara start-nya (pm2 / compose / node) |
+| `app logs molly` · `app down molly` | log · stop (PM2 dan docker compose) |
+
+Tanpa command, folder yang menentukan: ada `ecosystem.config.js` → PM2, ada `compose.yaml` → docker compose, ada `package.json` → `pnpm dev` / `npm run dev`.
+
+### Cloudflare Tunnel
+
+| Command | Fungsi |
+|---|---|
+| `tun` | status tunnel dan daftar hostname → port |
+| `tun add gcs.domainmu.com 5173` | tambah hostname, bikin DNS, restart cloudflared |
+| `tun rm gcs.domainmu.com` | hapus hostname |
+| `tun share 3000` | URL publik sementara (`*.trycloudflare.com`) buat demo |
+| `tun log` | log cloudflared |
+
+Setup tunnel pertama kali dan detail lainnya: [WEB.md](WEB.md).
+
+### Di editor
 
 **Next.js / React**: LSP (vtsls), Tailwind class completion, ESLint. Format pakai biome kalau ada `biome.json`, kalau tidak pakai prettier. `Space cR` rename file dan update import-nya otomatis.
-
-**Flutter**: LSP Dart (`dart language-server`) aktif otomatis kalau Flutter/Dart SDK terpasang. Jalankan app dengan `flutter run` di window tmux sendiri.
 
 ---
 
@@ -229,28 +269,10 @@ Di shell: `gs`, `gd`, `glog`, `gcm "feat: ..."`, `git lg`.
 
 ---
 
-## Kustomisasi
+## Selanjutnya
 
-| Mau | Edit |
-|---|---|
-| Tambah bahasa / LSP / formatter | `nvim/.config/nvim/lua/config/languages.lua` |
-| Tambah plugin | file baru di `nvim/.config/nvim/lua/plugins/` |
-| Keymap Neovim | `lua/config/keymaps.lua` atau di spec plugin terkait |
-| Alias / fungsi shell | `zsh/.config/zsh/40-aliases.zsh` (atau `~/.zshrc.local` untuk yang privat) |
-| Isi status bar tmux | `tmux/.config/tmux/tmux.conf` (bagian `status-right`) dan `scripts/status.sh` |
-| Folder yang dicari sessionizer | `export TMUX_SESSIONIZER_PATHS="$HOME/Projects $HOME/ros"` di `~/.zshrc.local` |
-| Email kerja untuk repo kantor | `~/.config/git/config.local` → `[includeIf "gitdir:~/ezra/"] path = ~/.config/git/work` |
+- Semua shortcut: [KEYMAPS.md](KEYMAPS.md) · semua command shell: [COMMANDS.md](COMMANDS.md)
+- Ubah config tanpa merusak repo: [CUSTOMIZE.md](CUSTOMIZE.md)
+- Ada yang error: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
-Setelah edit: `zr` reload zsh, `C-a r` reload tmux, `cmd+shift+,` reload Ghostty. Untuk Neovim, cukup buka ulang.
-
-## Troubleshooting
-
-| Masalah | Solusi |
-|---|---|
-| Ikon jadi kotak | Font Ghostty harus `JetBrainsMono Nerd Font` (`brew install --cask font-jetbrains-mono-nerd-font`) |
-| Theme Ghostty error | `ghostty +list-themes \| grep -i catppuccin`, lalu samakan namanya di config |
-| Backspace / warna aneh saat SSH | sudah ditangani `ssh-terminfo`. Kalau masih, `export TERM=xterm-256color` di host itu |
-| clangd tidak kenal header ROS | build dulu (`cbp pkg` / `Space rb`). Pastikan `compile_commands.json` ada di root workspace |
-| Treesitter parser gagal install | perlu `tree-sitter` CLI dan compiler C (`xcode-select --install`) |
-| Copy dari container tidak masuk clipboard | pastikan lewat tmux ini (OSC52 sudah aktif). Di Ghostty `clipboard-write = allow` |
-| Neovim lambat start pertama kali | normal, Mason dan treesitter sedang install. Cek dengan `:Lazy` dan `:Mason` |
+Setelah edit config: `zr` reload zsh, `C-a r` reload tmux, `cmd+shift+,` reload Ghostty. Untuk Neovim, cukup buka ulang.

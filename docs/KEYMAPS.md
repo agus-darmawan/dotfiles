@@ -33,7 +33,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `C-a h/j/k/l` | move pane (always tmux, also from SSH panes) |
 | **Popups** | |
 | `C-a f` | sessionizer (projects) |
-| `C-a s` | sessions (`ctrl-x` kills) |
+| `C-a s` | sessions and windows as a tree (`x` kills the selected one) |
 | `C-a S` | SSH hosts (enter window · `ctrl-v` vsplit · `ctrl-s` split · `ctrl-o` here) |
 | `C-a d` | docker containers → shell |
 | `C-a a` | web apps → open one in a new window (`app`) |
