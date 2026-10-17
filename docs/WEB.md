@@ -121,7 +121,7 @@ Every change copies the config to `config.yml.bak` first and runs
 Running cloudflared with `cloudflared service install` instead of Homebrew? Then use
 `export CLOUDFLARED_RESTART='launchctl kickstart -k gui/$(id -u)/com.cloudflare.cloudflared'`.
 
-The tmux status bar shows **☁ tunnel** while a `cloudflared` process is running.
+The tmux status bar shows **tunnel** while a `cloudflared` process is running.
 
 ## PM2
 

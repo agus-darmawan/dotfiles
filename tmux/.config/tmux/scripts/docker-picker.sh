@@ -20,5 +20,5 @@ cmd="$HOME/.config/tmux/scripts/denter.sh $name"
 if [[ -z ${TMUX:-} || $key == ctrl-o ]]; then exec $cmd; fi
 case "$key" in
   ctrl-v) tmux split-window -h "$cmd" ;;
-  *) tmux new-window -n " $name" "$cmd" ;;
+  *) tmux new-window -n "$name" "$cmd" ;;
 esac

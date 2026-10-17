@@ -44,13 +44,14 @@ set -g status-position bottom     # status bar at the bottom
 
 **Status bar segments.** `status-right` in [`tmux.conf`](../tmux/.config/tmux/tmux.conf) calls
 [`scripts/status.sh`](../tmux/.config/tmux/scripts/status.sh) once per segment: `tunnel`, `cpu`,
-`mem`, `docker`, `net`, `battery`. To add one, write a function in `status.sh` and a line for it
+`gpu`, `mem`, `temp`, `netspeed`, `docker`, `battery` (and `net`, the local IP, not shown by default).
+To add one, write a function in `status.sh` and a line for it
 in the `case` at the bottom:
 
 ```bash
 pm2_seg() { # online PM2 processes
   command -v pm2 >/dev/null || return 0
-  printf '⚙ %s ' "$(pm2 jlist | jq '[.[] | select(.pm2_env.status == "online")] | length')"
+  printf 'pm2 %s ' "$(pm2 jlist | jq '[.[] | select(.pm2_env.status == "online")] | length')"
 }
 
 case "$1" in
