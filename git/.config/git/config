@@ -36,7 +36,7 @@
 	prune = true
 
 [merge]
-	conflictstyle = zdiff3
+	conflictstyle = diff3
 
 [diff]
 	algorithm = histogram
