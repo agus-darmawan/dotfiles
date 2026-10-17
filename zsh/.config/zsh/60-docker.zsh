@@ -27,9 +27,3 @@ dstop() { local c; c=($(_dpick "" stop --multi)); (( ${#c} )) && docker stop $c;
 drm()   { local c; c=($(_dpick -a rm --multi)); (( ${#c} )) && docker rm $c; }
 dstat() { docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}\t{{.NetIO}}"; }
 dclean() { docker system prune -f && docker volume prune -f; }
-
-# run a GUI-less throwaway ROS container quickly
-drosrun() {
-  local distro=${1:-humble}
-  docker run --rm -it --net=host -e ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0} ros:$distro bash
-}

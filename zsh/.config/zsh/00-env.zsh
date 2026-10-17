@@ -12,8 +12,6 @@ path=(
   $HOME/.fzf/bin
   $HOME/.cargo/bin
   $HOME/go/bin
-  $HOME/.pub-cache/bin
-  $HOME/development/flutter/bin
   $path
 )
 export PATH
