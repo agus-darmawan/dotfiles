@@ -144,7 +144,7 @@ _tun_validate() { cloudflared tunnel --config "$CF_CONFIG" ingress validate >/de
 _tun_restart() {
   local cmd=${CLOUDFLARED_RESTART:-}
   if [[ -z $cmd ]]; then
-    if [[ $OSTYPE == darwin* ]]; then cmd="sudo brew services restart cloudflared"
+    if [[ $OSTYPE == darwin* ]]; then cmd="brew services restart cloudflared"
     else cmd="sudo systemctl restart cloudflared"; fi
   fi
   echo "→ $cmd"

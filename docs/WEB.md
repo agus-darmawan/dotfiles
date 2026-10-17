@@ -83,8 +83,11 @@ ingress:
 
 ```bash
 cloudflared tunnel route dns mac molly.example.com
-sudo brew services start cloudflared
+brew services start cloudflared           # starts at login, reads ~/.cloudflared/config.yml
 ```
+
+Run it as your user, not with `sudo`: a root service looks for its config in
+`/etc/cloudflared`, not in your home folder.
 
 ### Commands
 
@@ -113,7 +116,7 @@ Every change copies the config to `config.yml.bak` first and runs
 | Variable (in `~/.zshrc.local`) | Default |
 |---|---|
 | `CLOUDFLARED_CONFIG` | `~/.cloudflared/config.yml` |
-| `CLOUDFLARED_RESTART` | macOS: `sudo brew services restart cloudflared` · Linux: `sudo systemctl restart cloudflared` |
+| `CLOUDFLARED_RESTART` | macOS: `brew services restart cloudflared` · Linux: `sudo systemctl restart cloudflared` |
 
 Running cloudflared with `cloudflared service install` instead of Homebrew? Then use
 `export CLOUDFLARED_RESTART='launchctl kickstart -k gui/$(id -u)/com.cloudflare.cloudflared'`.
