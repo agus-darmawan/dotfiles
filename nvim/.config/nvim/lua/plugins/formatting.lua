@@ -26,17 +26,4 @@ return {
       }
     end,
   },
-
-  {
-    "mfussenegger/nvim-lint",
-    event = { "BufReadPost", "BufWritePost", "BufNewFile" },
-    config = function()
-      local lint = require("lint")
-      lint.linters_by_ft = require("config.languages").linters_by_ft
-      vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
-        group = vim.api.nvim_create_augroup("dot_lint", { clear = true }),
-        callback = function() lint.try_lint(nil, { ignore_errors = true }) end,
-      })
-    end,
-  },
 }

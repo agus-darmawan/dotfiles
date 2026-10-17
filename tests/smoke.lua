@@ -60,20 +60,10 @@ vim.defer_fn(function()
       "snacks",
       "blink.cmp",
       "conform",
-      "lint",
-      "dap",
-      "dapui",
-      "flutter-tools",
-      "oil",
       "flash",
       "gitsigns",
       "lualine",
-      "bufferline",
       "which-key",
-      "trouble",
-      "grug-far",
-      "persistence",
-      "render-markdown",
       "nvim-treesitter",
       "mason",
     }) do
@@ -81,7 +71,6 @@ vim.defer_fn(function()
       check("require " .. mod, rok, rerr)
     end
 
-    check("dap cpp configurations", #(require("dap").configurations.cpp or {}) >= 3)
     check("lsp config clangd", vim.lsp.config.clangd ~= nil and vim.lsp.config.clangd.cmd ~= nil)
     check("no startup errors", vim.v.errmsg == "", vim.v.errmsg)
 

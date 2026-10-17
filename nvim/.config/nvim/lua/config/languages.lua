@@ -5,10 +5,7 @@
 --  servers()         LSP servers  (mason = false → use system binary)
 --  formatters_by_ft  conform.nvim
 --  formatters        formatter overrides / conditions
---  linters_by_ft     nvim-lint
---  mason_tools       extra CLI tools (formatters, linters, debug adapters)
---
---  Dart/Flutter is handled by flutter-tools.nvim (lua/plugins/flutter.lua).
+--  mason_tools       extra CLI tools (formatters)
 -- ─────────────────────────────────────────────────────────────
 local M = {}
 
@@ -23,20 +20,13 @@ M.treesitter = {
   -- robotics / systems
   "c",
   "cpp",
-  "cuda",
   "cmake",
   "make",
-  "ninja",
   "python",
-  "rust",
-  "go",
-  "gomod",
-  "gosum",
   "xml",
   "yaml",
   "toml",
   "json",
-  "proto",
   -- web
   "javascript",
   "typescript",
@@ -45,20 +35,12 @@ M.treesitter = {
   "css",
   "scss",
   "graphql",
-  "prisma",
-  "svelte",
-  "vue",
   -- mobile
   "dart",
-  "swift",
-  "kotlin",
   -- ops / shell
   "bash",
   "dockerfile",
   "sql",
-  "nginx",
-  "terraform",
-  "hcl",
   -- editor / docs
   "lua",
   "luadoc",
@@ -155,9 +137,6 @@ function M.servers()
     tailwindcss = {},
     cssls = {},
     html = {},
-    emmet_language_server = {
-      filetypes = { "html", "css", "javascriptreact", "typescriptreact", "svelte", "vue" },
-    },
 
     -- Data / config
     jsonls = {
@@ -196,20 +175,8 @@ function M.servers()
     },
 
     -- Other languages
-    gopls = {
-      settings = {
-        gopls = {
-          gofumpt = true,
-          usePlaceholders = true,
-          staticcheck = true,
-          hints = { parameterNames = true, assignVariableTypes = true },
-        },
-      },
-    },
-    rust_analyzer = {
-      settings = { ["rust-analyzer"] = { check = { command = "clippy" }, cargo = { allFeatures = true } } },
-    },
-    sourcekit = { mason = false, filetypes = { "swift", "objc", "objcpp" } },
+    -- Dart / Flutter: the language server ships with the Dart SDK
+    dartls = { mason = false },
     marksman = {},
   }
 end
@@ -220,8 +187,6 @@ M.formatters_by_ft = {
   -- C/C++: only clang-format with a .clang-format file — never reformat foreign code
   c = { "clang_format", lsp_format = "never" },
   cpp = { "clang_format", lsp_format = "never" },
-  cuda = { "clang_format", lsp_format = "never" },
-  cmake = { "gersemi" },
   sh = { "shfmt" },
   bash = { "shfmt" },
   zsh = { "shfmt" },
@@ -238,9 +203,6 @@ M.formatters_by_ft = {
   yaml = { "prettierd" },
   graphql = { "prettierd" },
   toml = { "taplo" },
-  go = { "goimports", "gofumpt" },
-  rust = { "rustfmt", lsp_format = "fallback" },
-  swift = { "swiftformat" },
   dart = { "dart_format" },
   xml = { lsp_format = "prefer" },
   ["_"] = { "trim_whitespace" },
@@ -249,12 +211,7 @@ M.formatters_by_ft = {
 M.formatters = {
   clang_format = { condition = needs_config({ ".clang-format", "_clang-format" }) },
   biome = { condition = needs_config({ "biome.json", "biome.jsonc" }) },
-  gersemi = { condition = needs_config({ ".gersemirc" }) },
   shfmt = { prepend_args = { "-i", "2", "-ci" } },
-}
-
-M.linters_by_ft = {
-  dockerfile = { "hadolint" },
 }
 
 M.mason_tools = {
@@ -263,16 +220,9 @@ M.mason_tools = {
   "prettierd",
   "biome",
   "shfmt",
-  "gersemi",
   "taplo",
-  "goimports",
-  "gofumpt",
-  -- linters
-  "hadolint",
+  -- linters (bashls uses shellcheck)
   "shellcheck",
-  -- debug adapters
-  "codelldb",
-  "debugpy",
 }
 
 -- clang-format only from Mason when the system has none

@@ -78,7 +78,6 @@ Belum lancar motion Vim? Jalankan `:Tutor` dulu (30 menit), lalu lanjut ke sini.
 | `Space /` | grep seluruh project |
 | `Space ,` | daftar buffer yang terbuka |
 | `Space e` | explorer di kanan (`a` buat file, `d` hapus, `r` rename) |
-| `-` | **oil**: folder dibuka sebagai teks. Rename = edit nama lalu `:w`. Hapus = `dd` lalu `:w` |
 | `S-h` / `S-l` | pindah buffer |
 | `Space sr` | buka lagi picker terakhir |
 
@@ -97,8 +96,6 @@ Belum lancar motion Vim? Jalankan `:Tutor` dulu (30 menit), lalu lanjut ke sini.
 | `gsd"` / `gsr"'` | hapus / ganti pembungkus |
 | `gcc` / `gc` (visual) | comment |
 | `A-j` / `A-k` | pindah baris ke bawah / atas |
-| `ciq` `daa` `vif` | mini.ai: dalam quote, argumen, fungsi |
-| `Space sR` | search & replace se-project |
 
 ---
 
@@ -164,16 +161,6 @@ Semua perintah di atas otomatis pakai **colcon** di ROS 2 dan **catkin** (`catki
 7. Kursor di `sensor_msgs::msg::LaserScan`, tekan `Space ri` untuk lihat definisinya.
 8. File `.msg`/`.srv`/`.action` sudah dapat syntax highlight. URDF/xacro/launch.xml dapat LSP XML.
 
-### Debug node C++
-
-1. Build dengan `Space rb` (default-nya `RelWithDebInfo`, jadi ada debug symbol)
-2. `Space db` untuk pasang breakpoint
-3. `F5`, pilih **ROS2: launch node from install/**, pilih executable, lalu isi args (misal `--ros-args -p rate:=10`)
-4. `F10` step over, `F11` step into, `Space de` evaluasi variabel. Panel UI terbuka otomatis
-5. Untuk node yang sudah jalan: `F5`, pilih **Attach to process**
-
-Python node: buka file `.py`, `Space db`, lalu `F5`. debugpy sudah terpasang.
-
 ---
 
 ## Hari 6 — Session per container / robot
@@ -219,20 +206,11 @@ Tmux di robot tetap pakai prefix default `C-b`, sedangkan punyamu `C-a`, jadi ti
 
 ---
 
-## Hari 8 — Web dan Flutter
+## Hari 8 — Web dan Flutter di editor
 
-**Next.js / React**: LSP (vtsls), Tailwind class completion, ESLint, emmet. Format pakai biome kalau ada `biome.json`, kalau tidak pakai prettier. `Space cR` rename file dan update import-nya otomatis.
+**Next.js / React**: LSP (vtsls), Tailwind class completion, ESLint. Format pakai biome kalau ada `biome.json`, kalau tidak pakai prettier. `Space cR` rename file dan update import-nya otomatis.
 
-**Flutter**:
-| Keys | Fungsi |
-|---|---|
-| `Space Fd` | pilih device (HP, emulator, macOS) |
-| `Space Fr` | `flutter run` |
-| `Space Fh` / `Space FR` | hot reload / hot restart |
-| `Space Fo` | outline widget tree |
-| `Space Fl` | dev log |
-
-Closing tag widget muncul sebagai virtual text (`→ Column`), dan widget guide tampil di samping.
+**Flutter**: LSP Dart (`dart language-server`) aktif otomatis kalau Flutter/Dart SDK terpasang. Jalankan app dengan `flutter run` di window tmux sendiri.
 
 ---
 
@@ -245,8 +223,6 @@ Closing tag widget muncul sebagai virtual text (`→ Column`), dan widget guide 
 | `Space ghp` | preview perubahan inline |
 | `Space ghs` / `Space ghr` | stage / reset hunk |
 | `Space ub` | blame inline |
-| `Space gd` | diffview (review sebelum commit) |
-| `Space gH` | history file ini |
 | `Space go` | buka baris ini di GitHub |
 
 Di shell: `gs`, `gd`, `glog`, `gcm "feat: ..."`, `git lg`.

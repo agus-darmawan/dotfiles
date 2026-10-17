@@ -1,4 +1,5 @@
--- nvim-treesitter `main` branch (requires the tree-sitter CLI + a C compiler)
+-- nvim-treesitter `main` branch (parsers need the tree-sitter CLI + a C compiler;
+-- without the CLI, e.g. on older Ubuntu, the bundled parsers and regex syntax are used)
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -16,7 +17,7 @@ return {
         installed[p] = true
       end
       local missing = vim.tbl_filter(function(p) return not installed[p] end, wanted)
-      if #missing > 0 and not vim.g.offline then ts.install(missing) end
+      if #missing > 0 and not vim.g.offline and vim.fn.executable("tree-sitter") == 1 then ts.install(missing) end
 
       -- compound filetypes → parser
       vim.treesitter.language.register("yaml", { "yaml.docker-compose", "yaml.github" })
@@ -33,18 +34,5 @@ return {
         end,
       })
     end,
-  },
-
-  {
-    "nvim-treesitter/nvim-treesitter-context",
-    event = { "BufReadPost", "BufNewFile" },
-    opts = { max_lines = 3, multiline_threshold = 1, mode = "cursor" },
-    keys = {
-      {
-        "[c",
-        function() require("treesitter-context").go_to_context(vim.v.count1) end,
-        desc = "Goto context",
-      },
-    },
   },
 }

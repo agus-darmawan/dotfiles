@@ -50,52 +50,17 @@ return {
           lualine_x = {
             { ros_pkg, cond = wide, color = { fg = "#94e2d5" } },
             { autoformat, color = { fg = "#f38ba8" } },
-            {
-              function() return require("dap").status() end,
-              cond = function() return package.loaded["dap"] and require("dap").status() ~= "" end,
-              icon = " ",
-              color = { fg = "#f9e2af" },
-            },
             { lsp_names, cond = wide, color = { fg = "#89b4fa" } },
           },
           lualine_y = { "progress" },
           lualine_z = { "location" },
         },
-        extensions = { "lazy", "mason", "quickfix", "man", "trouble", "nvim-dap-ui", "oil" },
+        extensions = { "lazy", "mason", "quickfix", "man" },
       }
     end,
   },
 
   -- buffer tabs
-  {
-    "akinsho/bufferline.nvim",
-    event = "VeryLazy",
-    keys = {
-      { "<leader>bp", "<cmd>BufferLineTogglePin<cr>", desc = "Pin buffer" },
-      { "<leader>bo", "<cmd>BufferLineCloseOthers<cr>", desc = "Close other buffers" },
-      { "<leader>bP", "<cmd>BufferLineGroupClose ungrouped<cr>", desc = "Close unpinned" },
-      { "[b", "<cmd>BufferLineCyclePrev<cr>", desc = "Prev buffer" },
-      { "]b", "<cmd>BufferLineCycleNext<cr>", desc = "Next buffer" },
-      { "<leader>1", "<cmd>BufferLineGoToBuffer 1<cr>", desc = "Buffer 1" },
-      { "<leader>2", "<cmd>BufferLineGoToBuffer 2<cr>", desc = "Buffer 2" },
-      { "<leader>3", "<cmd>BufferLineGoToBuffer 3<cr>", desc = "Buffer 3" },
-      { "<leader>4", "<cmd>BufferLineGoToBuffer 4<cr>", desc = "Buffer 4" },
-      { "<leader>5", "<cmd>BufferLineGoToBuffer 5<cr>", desc = "Buffer 5" },
-    },
-    opts = {
-      options = {
-        close_command = function(n) Snacks.bufdelete(n) end,
-        right_mouse_command = function(n) Snacks.bufdelete(n) end,
-        diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
-        show_buffer_close_icons = false,
-        separator_style = "thin",
-        offsets = {
-          { filetype = "snacks_layout_box", text = "Explorer", highlight = "Directory", text_align = "left" },
-        },
-      },
-    },
-  },
 
   -- keymap hints
   {
@@ -107,12 +72,9 @@ return {
       spec = {
         { "<leader>b", group = "buffer" },
         { "<leader>c", group = "code" },
-        { "<leader>d", group = "debug" },
         { "<leader>f", group = "file/find" },
-        { "<leader>F", group = "flutter" },
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
-        { "<leader>q", group = "quit/session" },
         { "<leader>r", group = "ros2", icon = { icon = "󰚩", color = "cyan" } },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "terminal/tools" },
@@ -132,9 +94,4 @@ return {
   },
 
   -- markdown rendering in-buffer
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    ft = { "markdown" },
-    opts = { completions = { blink = { enabled = true } }, code = { sign = false, width = "block" } },
-  },
 }

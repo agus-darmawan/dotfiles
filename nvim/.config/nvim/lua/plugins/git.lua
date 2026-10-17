@@ -42,16 +42,4 @@ return {
       end,
     },
   },
-
-  {
-    "sindrets/diffview.nvim",
-    cmd = { "DiffviewOpen", "DiffviewFileHistory", "DiffviewClose" },
-    keys = {
-      { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Diff view" },
-      { "<leader>gD", "<cmd>DiffviewClose<cr>", desc = "Close diff view" },
-      { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "File history" },
-      { "<leader>gm", "<cmd>DiffviewOpen origin/main...HEAD<cr>", desc = "Diff vs origin/main" },
-    },
-    opts = { enhanced_diff_hl = true },
-  },
 }

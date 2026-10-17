@@ -53,15 +53,12 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `Space ,` | buffers |
 | `Space :` | command history |
 | `Space e` | explorer (right) |
-| `-` | oil: parent directory as a buffer |
-| `Space fo` | oil float |
 | `Space ff` `fg` `fr` `fp` `fc` | files · git files · recent · projects · config |
 | `Space fy` | copy file path |
 | `Space sw` | grep word / selection |
 | `Space sb` `sh` `sk` `sc` | buffer lines · help · keymaps · commands |
 | `Space sd` `sD` | diagnostics · buffer diagnostics |
 | `Space su` `sr` `st` | undo tree · resume picker · TODOs |
-| `Space sR` | search & replace (grug-far) |
 
 ### Code
 | Keys | Action |
@@ -77,7 +74,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `Space ss` / `Space sS` | symbols buffer / workspace |
 | `]d` `[d` / `]e` `[e` | next/prev diagnostic / error |
 | `]]` `[[` | next/prev reference of word |
-| `Space xx` `xX` `xs` `xq` | trouble: project · buffer · symbols · quickfix |
+| `Space xx` / `Space xq` | diagnostics picker / toggle quickfix |
 | `Space cm` | Mason |
 
 ### Editing
@@ -120,25 +117,6 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 
 Commands: `:Colcon [pkg]` `:ColconTest` `:ColconLog` `:RosTopics` `:RosNodes` `:RosLaunch` `:RosRun` `:RosCompileDb`
 
-### Debug (`Space d`)
-| Keys | Action |
-|---|---|
-| `Space db` / `Space dB` | breakpoint / conditional |
-| `F5` / `Space dc` | start / continue (pick ROS2 executable, file, or attach) |
-| `F10` `F11` `F12` | over · into · out |
-| `Space dC` | run to cursor |
-| `Space du` / `Space de` | UI / eval |
-| `Space dt` | terminate |
-
-### Flutter (`Space F`)
-| Keys | Action |
-|---|---|
-| `Space Fr` / `Space Fq` | run / quit |
-| `Space Fh` / `Space FR` | hot reload / hot restart |
-| `Space Fd` / `Space Fe` | devices / emulators |
-| `Space Fo` / `Space Fl` | widget outline / dev log |
-| `Space Fp` | pub get |
-
 ### Git (`Space g`)
 | Keys | Action |
 |---|---|
@@ -148,7 +126,6 @@ Commands: `:Colcon [pkg]` `:ColconTest` `:ColconLog` `:RosTopics` `:RosNodes` `:
 | `]h` / `[h` | next / prev hunk |
 | `Space ghs` `ghr` `ghp` `ghb` | stage · reset · preview · blame hunk |
 | `Space ub` | inline blame |
-| `Space gd` / `Space gH` / `Space gm` | diffview / file history / vs origin/main |
 | `Space go` | open on GitHub |
 
 ### Terminal / tools (`Space t`)
@@ -162,5 +139,4 @@ Commands: `:Colcon [pkg]` `:ColconTest` `:ColconLog` `:RosTopics` `:RosNodes` `:
 ### UI toggles (`Space u`)
 `uf` format-on-save · `uh` inlay hints · `ud` diagnostics · `uw` wrap · `us` spell · `ul`/`uL` numbers · `ug` indent guides · `uD` dim · `uT` treesitter · `uC` colorscheme · `un` dismiss notifications
 
-### Sessions (`Space q`)
-`qs` restore (cwd) · `ql` last · `qS` select · `qd` don't save · `qq` quit all
+`Space qq` quits everything.
