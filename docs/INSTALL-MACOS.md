@@ -74,7 +74,7 @@ or Docker Desktop yourself, or uncomment one of them in the `Brewfile`.
    After that, `` cmd+` `` drops a terminal from the top of the screen in any app.
 3. **Default shell.** macOS already uses zsh. If `echo $SHELL` shows something else:
    `chsh -s /bin/zsh`.
-4. **The prompt** is plain ASCII: the current folder and the git branch (`molly main*`, then `>`).
+4. **The prompt** is plain ASCII: the current folder and the git branch on one line (`molly main* >`).
    The window and tab title is `host:path`, so you can tell the Mac, a container and a robot apart.
 5. **Start tmux** with `t` (session `main`). The status bar is on top. tmux has no plugins: nothing
    to install inside it.

@@ -1,11 +1,10 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # Minimal, ASCII only: the current folder, git, ROS (where sourced), slow-command time.
-#   dotfiles main*
-#   >
+#   dotfiles main* > _
 # The host is not in the prompt: the tab title and the tmux window name show it.
 format = """
-$directory$git_branch$git_status${env_var.ROS_DISTRO}${env_var.ROS_DOMAIN_ID}${env_var.ROS_MASTER}$cmd_duration
+$directory$git_branch$git_status${env_var.ROS_DISTRO}${env_var.ROS_DOMAIN_ID}${env_var.ROS_MASTER}$cmd_duration\
 $character"""
 
 add_newline = false
