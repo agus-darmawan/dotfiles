@@ -68,6 +68,8 @@ named after the remote host.
 | `tun log` · `tun restart` · `tun edit` · `tun test <host>` | log · restart · edit the config · which rule matches |
 | `pml` · `pmlog` · `pmr <name>` · `pms` | `pm2 ls` · logs · restart · save |
 
+Setup and details: [WEB.md](WEB.md).
+
 ## Docker
 
 | Command | Action |
