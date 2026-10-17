@@ -1,0 +1,14 @@
+# Apps for the `app` command. Copied to ~/.config/apps by install.sh; edit freely.
+#
+#   name        folder                      [command]
+#
+# Without a command the folder decides how the app starts:
+#   ecosystem.config.js → pm2 start      compose.yaml → docker compose up -d
+#   package.json        → pnpm/bun/yarn/npm dev (foreground, in its own tmux window)
+
+molly         ~/apps/molly-dashboard
+gcs           ~/apps/nextgen-gcs
+netra         ~/apps/netra                scripts/local.sh up
+taksu         ~/web/taksu-tech
+database      ~/apps/database
+monitoring    ~/apps/monitoring
