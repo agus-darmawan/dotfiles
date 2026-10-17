@@ -9,7 +9,7 @@ roots=()
 if [[ -n ${TMUX_SESSIONIZER_PATHS:-} ]]; then
   read -r -a roots <<<"$TMUX_SESSIONIZER_PATHS"
 else
-  for d in "$HOME/Projects" "$HOME/projects" "$HOME/dev" "$HOME/workspace" \
+  for d in "$HOME/apps" "$HOME/web" "$HOME/Projects" "$HOME/projects" "$HOME/dev" "$HOME/workspace" \
     "$HOME/Developer" "$HOME/ros2_ws" "$HOME/dotfiles" "$HOME/Documents/GitHub"; do
     [[ -d $d ]] && roots+=("$d")
   done
