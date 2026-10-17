@@ -38,7 +38,7 @@ step() { printf "\n\033[34m==>\033[0m %s\n" "$*"; }
 ok() { printf "  \033[32m✓\033[0m %s\n" "$*"; }
 
 # glibc of this system, e.g. 2.31 on Ubuntu 20.04
-GLIBC=$(ldd --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+$')
+GLIBC=$(ldd --version 2>/dev/null | awk 'NR == 1 {print $NF}')  # awk reads all input: no SIGPIPE under pipefail
 glibc_at_least() { [[ $(printf '%s\n%s\n' "$1" "$GLIBC" | sort -V | head -1) == "$1" ]]; }
 
 gh_latest() { # owner/repo → newest semver tag without the leading v (no API rate limits)
