@@ -21,7 +21,7 @@ gui:
 git:
   diffRenderers:
     - colorArg: always
-      command: delta --dark --paging=never
+      command: "command -v delta >/dev/null && exec delta --dark --paging=never || exec cat"
   commit:
     signOff: false
   parseEmoji: true
