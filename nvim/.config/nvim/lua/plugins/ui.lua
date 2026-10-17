@@ -75,7 +75,6 @@ return {
         { "<leader>f", group = "file/find" },
         { "<leader>g", group = "git" },
         { "<leader>gh", group = "hunks" },
-        { "<leader>r", group = "ros2", icon = { icon = "󰚩", color = "cyan" } },
         { "<leader>s", group = "search" },
         { "<leader>t", group = "terminal/tools" },
         { "<leader>u", group = "ui toggles" },

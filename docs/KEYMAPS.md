@@ -98,24 +98,20 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 | `Space wd` / `Space wo` | close window / only |
 | `C-arrows` | resize |
 
-### ROS 2 (`Space r`)
+### ROS (`Space r`) — only where ROS is available (containers, robots)
 | Keys | Action |
 |---|---|
-| `Space rb` | colcon build **this package** (background → quickfix, merges compile_commands, restarts clangd) |
-| `Space ru` | build up-to this package |
-| `Space rB` | build whole workspace |
-| `Space rT` | colcon test this package |
-| `Space rL` | last colcon log |
-| `Space rc` | merge compile_commands.json |
-| `Space rt` | topics → echo / hz / bw / info |
-| `Space rn` | nodes → info / params |
-| `Space rs` | services → type / interface |
-| `Space ri` / `Space rI` | interface under cursor / all interfaces |
-| `Space rl` | pick launch file → `ros2 launch` |
-| `Space rr` | pick executable → `ros2 run` |
-| `Space rp` | package / workspace info |
+| `Space rb` | build **this package** in the background → quickfix, `compile_commands.json`, clangd restart |
+| `Space rB` | build the whole workspace |
+| `Space rL` | last build log |
+| `Space rc` | merge `compile_commands.json` |
+| `Space rt` | topics → echo / hz / info |
+| `Space rn` | nodes → info |
+| `Space rl` | pick a launch file → `ros2 launch` / `roslaunch` |
+| `Space rr` | pick an executable → `ros2 run` / `rosrun` |
 
-Commands: `:Colcon [pkg]` `:ColconTest` `:ColconLog` `:RosTopics` `:RosNodes` `:RosLaunch` `:RosRun` `:RosCompileDb`
+ROS 2 builds with colcon (`--packages-up-to`), ROS 1 with `catkin build` (catkin_tools) or `catkin_make`.
+Commands: `:RosBuild [pkg]` `:RosLog` `:RosCompileDb`
 
 ### Git (`Space g`)
 | Keys | Action |
