@@ -49,7 +49,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 
 **Terminal and tmux**
 - Ghostty with Catppuccin Mocha, JetBrainsMono Nerd Font and a drop-down quick terminal on `` cmd+` ``.
-- tmux status bar on top: session, windows, ROS domain, CPU, RAM, running containers, IP, battery, time.
+- tmux status bar on top: session, windows, CPU, RAM, running containers, IP, battery, time.
 - Popups for lazygit, lazydocker and btop; fuzzy pickers for projects, sessions, SSH hosts and containers.
 - `dev <host>` opens a session on a container or robot over SSH (windows code, build, run).
   `F12` hands every key to a tmux running on the robot.
@@ -69,7 +69,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
   `compile_commands.json` is merged and clangd restarts.
 - Pickers for topics, nodes, services, launch files and executables; `ros2 interface show` for the
   message under the cursor; debug a node from `install/` with codelldb.
-- Shell helpers: `ros`, `rosdomain`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`, `rif`.
+- Shell helpers inside containers and on robots (never on the Mac): `ros`, `rosdomain`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`, `rif`.
 
 <img src="assets/ros-build.gif" alt="colcon build from Neovim: error in quickfix, fix, rebuild" width="100%">
 

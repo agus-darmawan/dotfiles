@@ -1,23 +1,18 @@
-# ── ROS 2 ────────────────────────────────────────────────────
-# Base ROS is auto-sourced when /opt/ros/<distro> exists (set ROS_AUTO=0 to skip).
+# ── ROS 2 (only where /opt/ros exists: containers, robots — never the Mac) ──
+# Base ROS is auto-sourced (set ROS_AUTO=0 to skip).
 #   ros [distro]      source base + nearest workspace overlay
 #   rosws             print nearest colcon workspace root
-#   rosdomain <id>    set ROS_DOMAIN_ID (shows in tmux bar)
+#   rosdomain <id>    set ROS_DOMAIN_ID (shows in the prompt)
 #   rmw <cyclone|fast|zenoh>
 #   cb / cbp / cbu / ct / rcl   colcon helpers (always run from ws root)
 #   rtopic rnode rsrv rif rparam   fzf pickers
+[[ -d /opt/ros ]] || return 0
 
 _ros_detect_distro() {
   local d
   for d in ${ROS_DISTRO:-} jazzy humble iron rolling kilted; do
     [[ -n $d && -f /opt/ros/$d/setup.zsh ]] && { echo $d; return; }
   done
-}
-
-_ros_tmux_sync() {
-  [[ -n $TMUX ]] || return 0
-  tmux set -g @ros_domain "${ROS_DOMAIN_ID:-0}" 2>/dev/null
-  tmux set -g @ros_distro "${ROS_DISTRO:-ros}" 2>/dev/null
 }
 
 rosws() {
@@ -37,12 +32,10 @@ ros() {
     source $ws/install/setup.zsh
     print -P "%F{cyan}󰚩 $distro%f + overlay %F{green}${ws/#$HOME/~}%f"
   } || print -P "%F{cyan}󰚩 $distro%f"
-  _ros_tmux_sync
 }
 
 rosdomain() {
   export ROS_DOMAIN_ID=${1:?usage: rosdomain <0-101>}
-  _ros_tmux_sync
   print -P "%F{cyan}ROS_DOMAIN_ID=%f$ROS_DOMAIN_ID"
 }
 
@@ -126,7 +119,6 @@ if [[ ${ROS_AUTO:-1} == 1 && -z $AMENT_PREFIX_PATH ]]; then
   [[ -n $_d ]] && source /opt/ros/$_d/setup.zsh
   unset _d
 fi
-[[ -n $ROS_DISTRO ]] && _ros_tmux_sync
 
 # colcon / ros2 argcomplete
 if (( $+commands[register-python-argcomplete3] )); then

@@ -46,7 +46,7 @@ cd ~/dotfiles && ./install.sh
 Mulai dengan `t`, yang membuat atau attach ke session `main`. Status bar ada **di atas**:
 
 ```
-[ main ] 1 zsh  2 nvim │ humble:0  cpu 12%  ram 9.1/24G  docker 2  192.168.1.7  85%  host  01:10
+[ main ] 1 netra  2 humble │ cpu 12%  ram 9.1/24G  docker 2  192.168.1.7  85%  01:10
 ```
 
 Latihan:
@@ -139,7 +139,7 @@ cp ~/dotfiles/templates/ros2/.clang-format ~/elips_ws/   # opsional: format C++ 
 ```bash
 cd ~/elips_ws
 ros                  # source /opt/ros/<distro> + overlay install/ terdekat
-rosdomain 42         # ROS_DOMAIN_ID, langsung tampil di bar tmux
+rosdomain 42         # ROS_DOMAIN_ID, langsung tampil di prompt
 rmw cyclone          # ganti RMW
 
 cbp elips_patrol     # colcon build 1 package (+ compile_commands untuk clangd)
