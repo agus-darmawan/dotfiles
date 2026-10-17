@@ -55,6 +55,10 @@ function M.workspace(path)
   for _, dir in ipairs(dirs) do
     if isdir(dir .. "/src") and (not pkgdir or vim.startswith(pkgdir, dir .. "/src/")) then
       if pkgdir then return dir end
+      -- not built yet: packages under src/ are enough
+      local pkgs = vim.fn.glob(dir .. "/src/*/package.xml", false, true)
+      vim.list_extend(pkgs, vim.fn.glob(dir .. "/src/*/*/package.xml", false, true))
+      if #pkgs > 0 then return dir end
       for _, m in ipairs(markers) do
         if uv.fs_stat(dir .. "/" .. m) then return dir end
       end

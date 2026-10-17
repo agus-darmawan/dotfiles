@@ -42,6 +42,9 @@ else
   tool=colcon
 fi
 
+echo "==> zsh: workspace found before the first build"
+(cd "$WS/src/$pkg" && zsh -ic '[[ "$(rosws)" == "$WS" ]]' && echo "  ✓ rosws")
+
 echo "==> neovim: $tool build from the editor (ROS $ROS_VERSION, $distro)"
 log="$(mktemp)"
 if ! NVIM_OFFLINE=1 nvim --headless "+lua dofile('$DOTFILES/tests/ros.lua')" >"$log" 2>&1; then
