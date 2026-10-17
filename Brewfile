@@ -2,6 +2,7 @@
 
 # ── Terminal & fonts ─────────────────────────────────────────
 cask "ghostty"
+# cask "iterm2"             # optional: the profile in iterm2/ is installed either way
 cask "font-jetbrains-mono-nerd-font"
 cask "font-symbols-only-nerd-font"
 
