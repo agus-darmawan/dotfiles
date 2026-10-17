@@ -1,8 +1,14 @@
-# ── Web apps: app launcher ───────────────────────────────────
+# ── Web apps: app launcher, Cloudflare Tunnel, PM2 ───────────
 #
 #   app                 pick an app → new tmux window in its folder, started
 #   app ls              list registered apps
 #   app up|down|logs|cd <name>
+#
+#   tun                 tunnel status + hostname → service routes
+#   tun add <host> <port|url>   add a route, create the DNS record, restart
+#   tun rm <host>       remove a route, restart
+#   tun share <port>    temporary public URL for a local port (trycloudflare)
+#   tun log | restart | edit | test <host>
 #
 # Apps are registered in ~/.config/apps (see templates/apps.example):
 #   name   folder   [command]
@@ -122,3 +128,109 @@ app() {
       ;;
   esac
 }
+
+# ── Cloudflare Tunnel ────────────────────────────────────────
+CF_CONFIG=${CLOUDFLARED_CONFIG:-$HOME/.cloudflared/config.yml}
+
+_tun_name() { awk -F': *' '$1 == "tunnel" {print $2; exit}' "$CF_CONFIG" }
+_tun_routes() {
+  awk '/^[[:space:]]*-[[:space:]]*hostname:/ {h=$3}
+       /^[[:space:]]*service:/ && h != "" {print h "\t" $2; h=""}' "$CF_CONFIG"
+}
+_tun_validate() { cloudflared tunnel --config "$CF_CONFIG" ingress validate >/dev/null }
+
+_tun_restart() {
+  local cmd=${CLOUDFLARED_RESTART:-}
+  if [[ -z $cmd ]]; then
+    if [[ $OSTYPE == darwin* ]]; then cmd="sudo brew services restart cloudflared"
+    else cmd="sudo systemctl restart cloudflared"; fi
+  fi
+  echo "→ $cmd"
+  eval "$cmd"
+}
+
+_tun_add() {
+  local host=${1:?usage: tun add <hostname> <port|url>} target=${2:?usage: tun add <hostname> <port|url>}
+  [[ $target == <-> ]] && target="http://localhost:$target"
+  if _tun_routes | awk -v h="$host" '$1 == h {f=1} END {exit !f}'; then
+    print -u2 "tun: $host is already routed"; return 1
+  fi
+  cp "$CF_CONFIG" "$CF_CONFIG.bak"
+  awk -v h="$host" -v s="$target" '
+    !done && /^[[:space:]]*-[[:space:]]*service:[[:space:]]*http_status/ {
+      match($0, /^[[:space:]]*/); ind = substr($0, 1, RLENGTH)
+      print ind "- hostname: " h; print ind "  service: " s; done = 1
+    }
+    {print}
+    END {exit !done}' "$CF_CONFIG.bak" >"$CF_CONFIG" || {
+    cp "$CF_CONFIG.bak" "$CF_CONFIG"
+    print -u2 "tun: no catch-all rule (- service: http_status:404) in $CF_CONFIG"; return 1
+  }
+  if ! _tun_validate; then
+    cp "$CF_CONFIG.bak" "$CF_CONFIG"
+    print -u2 "tun: config invalid after the change, restored"; return 1
+  fi
+  echo "✓ $host → $target"
+  cloudflared tunnel route dns "$(_tun_name)" "$host" || print -u2 "tun: DNS record not created (check cert.pem / the zone)"
+  _tun_restart
+}
+
+_tun_rm() {
+  local host=${1:?usage: tun rm <hostname>}
+  cp "$CF_CONFIG" "$CF_CONFIG.bak"
+  awk -v h="$host" '
+    function indent(s) { match(s, /^[[:space:]]*/); return RLENGTH }
+    skip && (indent($0) > ind || $0 ~ /^[[:space:]]*$/) { next }
+    { skip = 0 }
+    $1 == "-" && $2 == "hostname:" && $3 == h { skip = 1; ind = indent($0); found = 1; next }
+    {print}
+    END {exit !found}' "$CF_CONFIG.bak" >"$CF_CONFIG" || {
+    cp "$CF_CONFIG.bak" "$CF_CONFIG"
+    print -u2 "tun: $host not found"; return 1
+  }
+  _tun_validate || { cp "$CF_CONFIG.bak" "$CF_CONFIG"; print -u2 "tun: config invalid, restored"; return 1 }
+  echo "✓ removed $host (delete its DNS record in the Cloudflare dashboard if no longer needed)"
+  _tun_restart
+}
+
+_tun_log() {
+  local f
+  for f in ${HOMEBREW_PREFIX:-/opt/homebrew}/var/log/cloudflared.log \
+    /Library/Logs/com.cloudflare.cloudflared.err.log /var/log/cloudflared.log; do
+    [[ -r $f ]] && { tail -n 100 -f "$f"; return }
+  done
+  (( $+commands[journalctl] )) && { journalctl -u cloudflared -f; return }
+  print -u2 "tun: no cloudflared log found"
+}
+
+tun() {
+  (( $+commands[cloudflared] )) || { print -u2 "cloudflared is not installed (brew install cloudflared)"; return 1 }
+  case ${1:-} in
+    share) cloudflared tunnel --url "http://localhost:${2:?usage: tun share <port>}" ;;
+    add) _tun_add "$2" "$3" ;;
+    rm) _tun_rm "$2" ;;
+    restart) _tun_restart ;;
+    log) _tun_log ;;
+    edit) ${EDITOR:-nvim} "$CF_CONFIG" ;;
+    test) cloudflared tunnel --config "$CF_CONFIG" ingress rule "https://${2:?usage: tun test <hostname>}" ;;
+    ""|ls|status)
+      if pgrep -x cloudflared >/dev/null; then print -P "%F{green}●%f cloudflared running"
+      else print -P "%F{red}●%f cloudflared not running"; fi
+      if [[ -f $CF_CONFIG ]]; then
+        echo "tunnel: $(_tun_name)   config: ${CF_CONFIG/#$HOME/~}"
+        _tun_routes | awk -F'\t' '{printf "  %-36s → %s\n", $1, $2}'
+      else
+        echo "no config at $CF_CONFIG (set CLOUDFLARED_CONFIG)"
+      fi
+      ;;
+    *) echo "usage: tun [ls|add|rm|share|log|restart|edit|test]"; return 1 ;;
+  esac
+}
+
+# ── PM2 ──────────────────────────────────────────────────────
+if (( $+commands[pm2] )); then
+  alias pml='pm2 ls'
+  alias pmlog='pm2 logs --lines 100'
+  alias pmr='pm2 restart'
+  alias pms='pm2 save'
+fi
