@@ -154,12 +154,12 @@ Semua perintah di atas otomatis pakai **colcon** di ROS 2 dan **catkin** (`catki
 
 1. Buka file di package, lalu `Space rb` untuk build package itu di background. Hasilnya muncul sebagai notifikasi.
 2. Kalau error, quickfix terbuka otomatis. `]q`/`[q` lompat antar error, `Space rL` untuk log lengkap.
+   Menu `Space r` cuma muncul di container/robot yang punya ROS; di Mac tidak ada.
 3. Setelah build, `compile_commands.json` di-merge dan clangd di-restart. Autocomplete untuk `rclcpp::` dan msg custom langsung jalan.
-4. `Space rt`: pilih topic, lalu pilih aksi (echo / hz / bw / info). Output-nya di terminal bawah.
-5. `Space rl`: pilih launch file di package, lalu `ros2 launch`.
-6. `Space rr`: pilih executable, lalu `ros2 run`.
-7. Kursor di `sensor_msgs::msg::LaserScan`, tekan `Space ri` untuk lihat definisinya.
-8. File `.msg`/`.srv`/`.action` sudah dapat syntax highlight. URDF/xacro/launch.xml dapat LSP XML.
+4. `Space rt`: pilih topic, lalu pilih aksi (echo / hz / info). Output-nya di terminal bawah.
+5. `Space rl`: pilih launch file di package, lalu `ros2 launch` (ROS 1: `roslaunch`).
+6. `Space rr`: pilih executable, lalu `ros2 run` (ROS 1: `rosrun`).
+7. File `.msg`/`.srv`/`.action` sudah dapat syntax highlight. URDF/xacro/launch.xml dapat LSP XML.
 
 ---
 

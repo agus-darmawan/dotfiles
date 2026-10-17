@@ -40,7 +40,11 @@ vim.defer_fn(function()
     local ros = require("util.ros")
     check("ros package", ros.package() == "demo_pkg", ros.package())
     check("ros workspace", real(ros.workspace()) == real(ws), ros.workspace())
-    check("ros keymap", vim.fn.maparg("<leader>rb", "n") ~= "", "missing <leader>rb")
+    if ros.available() then
+      check("ros menu (ROS available)", vim.fn.maparg("<leader>rb", "n") ~= "", "missing <leader>rb")
+    else
+      check("no ros menu (no ROS here)", vim.fn.maparg("<leader>rb", "n") == "", "<leader>rb is mapped")
+    end
 
     for file, ft in pairs({
       ["robot.urdf"] = "xml",
