@@ -49,7 +49,28 @@ USER dev
 RUN /home/dev/dotfiles/container/install.sh
 ```
 
-## 3. Work from the Mac
+## 3. SSH into the container
+
+Give each dev container an SSH server bound to localhost (the
+[ros2-humble-devbox](https://github.com/DarmawanRobotics/ros2-humble-devbox) template already does), one port per container:
+
+```yaml
+    ports:
+      - "127.0.0.1:2222:22"     # humble; 2223 jazzy, 2224 noetic
+```
+
+`install.sh` creates `~/.ssh/config.d/containers` from
+[`ssh/config.d/containers.example`](../ssh/config.d/containers.example) with `humble`, `jazzy` and
+`noetic` hosts. Adjust ports and users there, then:
+
+```bash
+ssh humble        # one shell
+dev humble        # tmux session humble: code / build / run, all inside the container
+```
+
+Host keys are not pinned for these hosts because containers are rebuilt often.
+
+## 4. Work from the Mac
 
 The recommended setup: **tmux runs on the Mac**, panes enter the container.
 

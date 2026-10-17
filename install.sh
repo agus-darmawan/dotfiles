@@ -94,10 +94,11 @@ if [[ ! -f $HOME/.ssh/config ]]; then
 else
   grep -q "config.d" "$HOME/.ssh/config" || warn "add 'Include ~/.ssh/config.d/*' at the top of ~/.ssh/config"
 fi
-[[ -f $HOME/.ssh/config.d/robots ]] || {
-  cp "$DOTFILES/ssh/config.d/robots.example" "$HOME/.ssh/config.d/robots"
-  ok "created ~/.ssh/config.d/robots — edit robot IPs there"
-}
+for f in robots containers; do
+  [[ -f $HOME/.ssh/config.d/$f ]] && continue
+  cp "$DOTFILES/ssh/config.d/$f.example" "$HOME/.ssh/config.d/$f"
+  ok "created ~/.ssh/config.d/$f — edit hosts and ports there"
+done
 
 # ── Plugins ──────────────────────────────────────────────────
 if ((DO_PLUGINS)); then
