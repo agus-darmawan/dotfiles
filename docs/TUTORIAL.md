@@ -29,7 +29,7 @@ Langkah lengkapnya ada di [INSTALL-MACOS.md](INSTALL-MACOS.md).
 
 ## Hari 1 — Shell (zsh)
 
-Prompt-nya polos tanpa ikon: nama folder terakhir dan branch git, misalnya `molly main*` lalu `>` di baris bawah. Nama host ada di judul tab dan nama window tmux (`macbook:~/apps/molly`, `humble:~/ros2_ws`), jadi tetap kelihatan kamu lagi di Mac, di container, atau di robot.
+Prompt-nya polos tanpa ikon: nama folder terakhir dan branch git, dalam satu baris, misalnya `molly main* >`. Nama host ada di judul tab dan nama window tmux (`macbook:~/apps/molly`, `humble:~/ros2_ws`), jadi tetap kelihatan kamu lagi di Mac, di container, atau di robot.
 
 | Coba ini | Hasilnya |
 |---|---|

@@ -6,14 +6,11 @@ Aliases and functions from [`zsh/.config/zsh/`](../zsh/.config/zsh/). Key bindin
 ## Prompt and title
 
 ```text
-molly main*
->
-
-patrol main humble #42 12s
->
+molly main* > npm run dev
+patrol main humble #42 12s > cbp patrol
 ```
 
-Plain ASCII, no icons: the current folder, the git branch with `*` (modified), `+` (staged), `?`
+One line, plain ASCII, no icons: the current folder, the git branch with `*` (modified), `+` (staged), `?`
 (untracked), `^`/`v` (ahead/behind), then the ROS distro with `#ROS_DOMAIN_ID` or `@master` (only
 where ROS is sourced) and how long a command slower than 2 s took. `>` turns red after a failed
 command.
