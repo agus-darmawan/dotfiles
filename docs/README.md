@@ -1,5 +1,8 @@
 # Documentation
 
+The complete **user manual** is a PDF: [manual/manual.pdf](manual/manual.pdf) (LaTeX sources in
+[manual/](manual/README.md)). The Markdown guides below cover the same topics.
+
 | Document | What's inside |
 |---|---|
 | [INSTALL-MACOS.md](INSTALL-MACOS.md) | Installing on the Mac: what the installer changes, first launch, iTerm2 and VS Code, SSH, verify, update, uninstall |

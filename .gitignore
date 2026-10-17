@@ -6,3 +6,11 @@
 # runtime data that must not live in the repo
 nvim/.config/nvim/.luarc.json
 nvim/.config/nvim/lua/config/local.lua
+
+# LaTeX build files (docs/manual): only manual.pdf is committed
+docs/manual/*.aux
+docs/manual/*.fdb_latexmk
+docs/manual/*.fls
+docs/manual/*.log
+docs/manual/*.out
+docs/manual/*.toc

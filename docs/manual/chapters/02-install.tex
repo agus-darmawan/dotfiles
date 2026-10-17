@@ -1,0 +1,117 @@
+\chapter{Installation on macOS}\label{ch:install}
+
+Apple Silicon or Intel, macOS 14 or newer. Most of the 10--20 minutes are Homebrew downloads.
+
+\section{Before you start}
+
+Install the Command Line Tools (git, clang, make). Homebrew asks for them too; installing them first
+avoids a second prompt:
+
+\begin{shell}
+xcode-select --install
+\end{shell}
+
+Homebrew is installed by the installer when it is missing. Close running terminals and tmux if you
+already have configs for them: the installer moves the old files away.
+
+\section{Install}
+
+\begin{shell}
+git clone git@github.com:agus-darmawan/dotfiles.git ~/dotfiles
+cd ~/dotfiles && ./install.sh
+\end{shell}
+
+Keep the repository at \file{~/dotfiles}; helpers and docs point there.
+
+\subsection{What the installer does}
+
+\begin{keys}{3.2cm}
+\head{Step}{Details}
+Homebrew bundle & Everything in the \file{Brewfile}: Ghostty, JetBrainsMono Nerd Font, tmux,
+starship, zoxide, fzf, eza, bat, fd, ripgrep, btop, macmon, Neovim and the tree-sitter CLI, node,
+python, git, delta, lazygit, gh, cloudflared, lazydocker. A failed package is reported and the
+install continues.\\
+Backup & Moves existing \file{~/.config/{ghostty,tmux,nvim,zsh,lazygit,git}}, \file{~/.zshrc} and
+\file{~/.config/starship.toml} to \file{~/.dotfiles-backup/<date-time>/}.\\
+Link & Symlinks every package with GNU Stow, so editing \file{~/.config/nvim/...} edits the
+repository.\\
+tmux terminfo & Compiles \texttt{tmux-256color} into \file{~/.terminfo} (macOS ships without it).\\
+iTerm2 & Installs the profile \emph{dotfiles (Catppuccin Mocha)}.\\
+SSH & Creates \file{~/.ssh/config} (connection sharing) and the host files
+\file{~/.ssh/config.d/containers} and \file{~/.ssh/config.d/robots} when they do not exist. Never
+overwrites.\\
+Apps & Creates \file{~/.config/apps}, the list of web apps (chapter~\ref{ch:web}).\\
+Plugins & zsh plugins, and Neovim plugins at the versions pinned in \file{lazy-lock.json}.\\
+\end{keys}
+
+Docker is not installed: use OrbStack (\cmd{brew install --cask orbstack}) or Docker Desktop.
+
+\subsection{Installer options}
+
+\begin{keys}{4.4cm}
+\head{Command}{Use it when}
+\cmd{./install.sh} & First install, or to pick up new Brewfile entries\\
+\cmd{./install.sh --no-brew} & After \cmd{git pull}: re-link and refresh plugins, skip Homebrew\\
+\cmd{./install.sh --link} & Only (re)create the symlinks\\
+\cmd{./install.sh --unlink} & Remove the symlinks\\
+\end{keys}
+
+\begin{warning}
+\file{container/install.sh} is for Linux only (containers, Jetsons, robots). Never run it on the
+Mac: it would put Linux binaries into \file{~/.local/bin}.
+\end{warning}
+
+\section{First launch}
+
+\begin{enumerate}
+  \item \textbf{Open Ghostty.} Font and theme are already set. If icons look like boxes, the font
+        is missing: \cmd{brew install --cask font-jetbrains-mono-nerd-font}.
+  \item \textbf{Quick terminal.} System Settings \(\rightarrow\) Privacy \& Security \(\rightarrow\)
+        Accessibility \(\rightarrow\) enable Ghostty. Then \key{cmd+`} drops a terminal from the top
+        of the screen in any app.
+  \item \textbf{Start tmux} with \key{t}. The status bar appears at the top.
+  \item \textbf{Start Neovim} with \cmd{nvim}. Mason installs the language servers and Treesitter
+        compiles its parsers in the background, once. Watch with \cmd{:Mason} and \cmd{:Lazy}.
+  \item \textbf{Option key.} The left Option key works as Alt; the right one still types special
+        characters.
+\end{enumerate}
+
+\section{Verify}
+
+\begin{shell}
+~/dotfiles/tests/smoke.sh
+\end{shell}
+
+It checks the links, the binaries, the tmux config and status segments, the zsh helpers, and loads
+every Neovim plugin. Every line should show a check mark. In Neovim, \cmd{:checkhealth} gives the
+detailed picture.
+
+\section{Update}
+
+Run the commands one at a time:
+
+\begin{shell}
+cd ~/dotfiles && git pull
+./install.sh --no-brew        # re-link, plugins at the pinned versions
+tmux kill-server              # then open a new tab and type: t
+\end{shell}
+
+\begin{keys}{3.6cm}
+\head{Component}{Update with}
+Homebrew packages & \cmd{brewup} (or \cmd{brew bundle --file ~/dotfiles/Brewfile})\\
+Neovim plugins & \cmd{:Lazy sync}, then commit \file{lazy-lock.json}\\
+LSP servers, tools & \cmd{:MasonUpdate}, then \cmd{:Mason} \(\rightarrow\) \key{U}\\
+Treesitter parsers & \cmd{:TSUpdate}\\
+zsh plugins & \cmd{plug-update}\\
+\end{keys}
+
+\section{Uninstall}
+
+\begin{shell}
+cd ~/dotfiles && ./install.sh --unlink       # remove the symlinks
+ls ~/.dotfiles-backup/                       # pick a backup
+cp -R ~/.dotfiles-backup/<date-time>/. ~/    # restore the old configs
+\end{shell}
+
+Plugin data lives in \file{~/.local/share/nvim}, \file{~/.local/state/nvim} and
+\file{~/.local/share/zsh}. Homebrew packages stay installed until you \cmd{brew uninstall} them.

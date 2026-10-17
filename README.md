@@ -117,6 +117,7 @@ Every key: [docs/KEYMAPS.md](docs/KEYMAPS.md)
 
 | For | Document |
 |---|---|
+| Everything in one PDF (LaTeX) | [User manual](docs/manual/manual.pdf) |
 | Installing on the Mac, iTerm2 and VS Code | [INSTALL-MACOS.md](docs/INSTALL-MACOS.md) |
 | Learning the setup step by step (Bahasa Indonesia) | [TUTORIAL.md](docs/TUTORIAL.md) |
 | All shortcuts: Ghostty, tmux, Neovim | [KEYMAPS.md](docs/KEYMAPS.md) |

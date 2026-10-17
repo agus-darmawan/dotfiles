@@ -1,0 +1,146 @@
+\chapter{Web apps}\label{ch:web}
+
+Three helpers run the web apps on the Mac or a home server, defined in
+\file{zsh/.config/zsh/50-web.zsh}:
+
+\begin{keys}{3.6cm}
+\head{Helper}{For}
+\cmd{app} & Start an app in its own tmux window, from a short list of your projects\\
+\cmd{tun} & See and change what the Cloudflare Tunnel serves, or share a port for a moment\\
+\cmd{pml} \cmd{pmlog} \cmd{pmr} \cmd{pms} & PM2 shortcuts\\
+\end{keys}
+
+\section{The app list}
+
+\file{install.sh} creates \file{~/.config/apps}. One line per app: a name, its folder, and
+optionally the command that starts it.
+
+\begin{plain}
+# name        folder                      [command]
+molly         ~/apps/molly-dashboard
+gcs           ~/apps/nextgen-gcs
+netra         ~/apps/netra                scripts/local.sh up
+database      ~/apps/database
+\end{plain}
+
+Without a command, the folder decides how the app starts:
+
+\begin{keys}{5.2cm}
+\head{The folder has}{\texttt{app} runs}
+\file{ecosystem.config.js} (or \file{.cjs}, \file{.json}) & \cmd{pm2 start <file>}, then follows \cmd{pm2 logs}\\
+\file{compose.yaml} or \file{docker-compose.yml} & \cmd{docker compose up -d}, then follows the logs\\
+\file{package.json} & \cmd{pnpm dev}, \cmd{bun run dev}, \cmd{yarn dev} or \cmd{npm run dev}, picked from the lockfile\\
+none of these & Only opens a shell in the folder\\
+\end{keys}
+
+\section{The app command}
+
+\begin{keys}{3.6cm}
+\head{Command}{Action}
+\cmd{app} or \key{C-a a} & Pick an app: a new tmux window named after it opens in its folder and starts it\\
+\cmd{app <name>} & The same without the picker\\
+\cmd{app ls} & Every app with how it starts (\texttt{pm2}, \texttt{compose}, \texttt{node}, \texttt{cmd}) and its folder\\
+\cmd{app up <name>} & Start in the background (PM2 and compose)\\
+\cmd{app down <name>} & \cmd{pm2 stop} or \cmd{docker compose down}\\
+\cmd{app logs <name>} & PM2 or compose logs\\
+\cmd{app cd <name>} & Change into the folder\\
+\end{keys}
+
+\screenshot[0.7]{app-picker}{\key{C-a a}: the app picker, with the folder of the selected app on the right.}
+
+A typical morning:
+
+\begin{shell}
+t                 # tmux session main
+app molly         # window "molly": pnpm dev
+app database      # window "database": docker compose up -d, then the logs
+tun               # are the public hostnames up?
+\end{shell}
+
+\section{Cloudflare Tunnel}
+
+\cmd{tun} works on a locally managed tunnel: one \file{config.yml} with ingress rules, run by
+\texttt{cloudflared} as a service. Tunnels managed in the Cloudflare dashboard (token based) have no
+local config; change those in the dashboard.
+
+\subsection{One-time setup}
+
+\begin{shell}
+cloudflared tunnel login          # browser login, writes ~/.cloudflared/cert.pem
+cloudflared tunnel create mac     # writes ~/.cloudflared/<tunnel-id>.json
+\end{shell}
+
+Then write \file{~/.cloudflared/config.yml}:
+
+\begin{plain}
+tunnel: <tunnel-id>
+credentials-file: /Users/<you>/.cloudflared/<tunnel-id>.json
+
+ingress:
+  - hostname: molly.example.com
+    service: http://localhost:3000
+  - service: http_status:404      # must stay last: tun adds routes above it
+\end{plain}
+
+\begin{shell}
+cloudflared tunnel route dns mac molly.example.com
+brew services start cloudflared   # starts at login, reads ~/.cloudflared/config.yml
+\end{shell}
+
+\begin{warning}
+Start the service as your user, not with \cmd{sudo}: a root service reads its config from
+\file{/etc/cloudflared}, not from your home folder.
+\end{warning}
+
+\subsection{Commands}
+
+\begin{keys}{4.2cm}
+\head{Command}{Action}
+\cmd{tun} & Running or not, the tunnel name, and every hostname \(\rightarrow\) service route\\
+\cmd{tun add <host> <port>} & Add a route (a bare port becomes \texttt{http://localhost:<port>}), create its DNS record, restart\\
+\cmd{tun rm <host>} & Remove a route and restart (delete the DNS record in the dashboard)\\
+\cmd{tun test <host>} & Which rule a request for that hostname would hit\\
+\cmd{tun share <port>} & Temporary \texttt{*.trycloudflare.com} URL for a local port; \key{C-c} ends it\\
+\cmd{tun log} & Follow the cloudflared log\\
+\cmd{tun restart} & Restart the service\\
+\cmd{tun edit} & Open \file{config.yml} in Neovim\\
+\end{keys}
+
+\screenshot[0.7]{tun}{\cmd{tun}: tunnel status and the hostname routes.}
+
+Every change copies the config to \file{config.yml.bak} first and runs
+\cmd{cloudflared tunnel ingress validate} afterwards; an invalid result is rolled back.
+
+Settings, in \file{~/.zshrc.local}:
+
+\begin{keys}{4.6cm}
+\head{Variable}{Default}
+\texttt{CLOUDFLARED\_CONFIG} & \file{~/.cloudflared/config.yml}\\
+\texttt{CLOUDFLARED\_RESTART} & \cmd{brew services restart cloudflared}\\
+\end{keys}
+
+With \cmd{cloudflared service install} instead of Homebrew:
+
+\begin{shell}
+export CLOUDFLARED_RESTART='launchctl kickstart -k gui/$(id -u)/com.cloudflare.cloudflared'
+\end{shell}
+
+\section{PM2 and Docker}
+
+\begin{keys}{3.8cm}
+\head{Alias}{Command}
+\cmd{pml} & \cmd{pm2 ls}\\
+\cmd{pmlog} & \cmd{pm2 logs --lines 100}\\
+\cmd{pmr <name>} & \cmd{pm2 restart <name>}\\
+\cmd{pms} & \cmd{pm2 save} (the list that \cmd{pm2 resurrect} restores)\\
+\cmd{dps}, \cmd{dpsa}, \cmd{di} & Containers, all containers, images\\
+\cmd{dcu}, \cmd{dcd}, \cmd{dcl}, \cmd{dcb} & \cmd{docker compose} up -d, down, logs -f, build\\
+\cmd{dsh [container]} & Shell into a container (zsh, bash or sh), fuzzy pick without a name\\
+\cmd{dlog}, \cmd{dstat} & Follow logs, live CPU/RAM per container\\
+\cmd{dstop}, \cmd{drm} & Stop / remove containers (multi-select with \key{Tab})\\
+\cmd{dclean} & Prune stopped containers, networks, dangling images and volumes\\
+\cmd{lzd} or \key{C-a D} & lazydocker\\
+\end{keys}
+
+To start the saved PM2 apps at login: \cmd{pm2 startup} once, then \cmd{pm2 save} whenever the list
+changes.

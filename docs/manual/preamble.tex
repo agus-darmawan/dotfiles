@@ -1,0 +1,128 @@
+% ─────────────────────────────────────────────────────────────
+%  Layout and styles for the dotfiles user manual (pdflatex)
+% ─────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sc]{mathpazo}
+\usepackage[scaled=0.90]{helvet}
+\renewcommand{\ttdefault}{txtt}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm,headheight=14pt]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,longtable,array}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+\usepackage{bookmark}
+\usepackage{url}
+
+\graphicspath{{figures/}{../../assets/}}
+
+% ── Catppuccin-inspired palette (readable on paper) ──────────
+\definecolor{accent}{HTML}{7287FD}    % lavender
+\definecolor{accentdark}{HTML}{1E66F5} % blue
+\definecolor{mauve}{HTML}{8839EF}
+\definecolor{ink}{HTML}{1E1E2E}
+\definecolor{muted}{HTML}{6C6F85}
+\definecolor{codebg}{HTML}{EFF1F5}
+\definecolor{coderule}{HTML}{CCD0DA}
+\definecolor{keybg}{HTML}{E6E9EF}
+\definecolor{notebg}{HTML}{EEF2FF}
+\definecolor{warnbg}{HTML}{FDF1E7}
+\definecolor{warnrule}{HTML}{FE640B}
+
+\hypersetup{colorlinks=true,linkcolor=accentdark,urlcolor=accentdark,
+  pdftitle={dotfiles -- User Manual},pdfauthor={Agus Darmawan}}
+
+% ── Headings ─────────────────────────────────────────────────
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{ink}}
+  {\color{accent}\large\MakeUppercase{\chaptertitlename}\ \thechapter}{4pt}{\Huge}
+  [\vspace{4pt}{\color{coderule}\titlerule[1pt]}]
+\titlespacing*{\chapter}{0pt}{-10pt}{22pt}
+\titleformat{\section}{\sffamily\Large\bfseries\color{ink}}{\color{accent}\thesection}{0.7em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{ink}}{\color{accent}\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{mauve}}{}{0em}{}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+% ── Header / footer ──────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\small\color{muted}dotfiles -- User Manual}
+\fancyhead[R]{\sffamily\small\color{muted}\leftmark}
+\fancyfoot[C]{\sffamily\small\color{muted}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{coderule}\hrule width\headwidth height\headrulewidth}}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\sffamily\small\color{muted}\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% ── Inline helpers ───────────────────────────────────────────
+% \key{C-a |}  a key or key sequence      \cmd{tun add}  a shell command
+% \file{~/.config/apps}  a path            arguments are taken literally
+\newcommand{\key}[1]{\begingroup\setlength{\fboxsep}{1.6pt}\colorbox{keybg}{\ttfamily\small\detokenize{#1}}\endgroup}
+\newcommand{\keyx}[1]{\begingroup\setlength{\fboxsep}{1.6pt}\colorbox{keybg}{\ttfamily\small #1}\endgroup}% LaTeX allowed inside
+\newcommand{\cmd}[1]{\leavevmode{\ttfamily\color{mauve}\detokenize{#1}}}
+\DeclareUrlCommand\filepath{\def\UrlFont{\ttfamily\color{ink}}}% breaks after / and .
+\newcommand{\file}{\leavevmode\filepath}
+\newcommand{\ui}[1]{\textsf{\bfseries #1}}
+
+% ── Code blocks ──────────────────────────────────────────────
+\lstdefinestyle{shell}{
+  basicstyle=\ttfamily\small\color{ink},
+  backgroundcolor=\color{codebg},
+  frame=single, rulecolor=\color{coderule}, framesep=6pt,
+  xleftmargin=6pt, xrightmargin=6pt,
+  columns=fullflexible, keepspaces=true, upquote=true,
+  showstringspaces=false, breaklines=true,
+  aboveskip=8pt, belowskip=8pt,
+  commentstyle=\color{muted}\itshape,
+  morecomment=[l]{\#},
+}
+
+\lstdefinestyle{plain}{
+  basicstyle=\ttfamily\small\color{ink},
+  backgroundcolor=\color{codebg},
+  frame=single, rulecolor=\color{coderule}, framesep=6pt,
+  xleftmargin=6pt, xrightmargin=6pt,
+  columns=fullflexible, keepspaces=true, upquote=true,
+  showstringspaces=false, breaklines=true,
+  aboveskip=8pt, belowskip=8pt,
+}
+\lstset{style=shell}
+\lstnewenvironment{shell}{\lstset{style=shell}}{}
+\lstnewenvironment{plain}{\lstset{style=plain}}{}
+
+% ── Callouts ─────────────────────────────────────────────────
+\newtcolorbox{note}[1][Note]{enhanced,breakable,colback=notebg,colframe=accent,
+  boxrule=0pt,leftrule=3pt,arc=2pt,left=8pt,right=8pt,top=5pt,bottom=5pt,
+  fonttitle=\sffamily\bfseries\small,coltitle=accentdark,title=#1,attach title to upper={\ \ },
+  before skip=8pt,after skip=8pt}
+\newtcolorbox{warning}[1][Careful]{enhanced,breakable,colback=warnbg,colframe=warnrule,
+  boxrule=0pt,leftrule=3pt,arc=2pt,left=8pt,right=8pt,top=5pt,bottom=5pt,
+  fonttitle=\sffamily\bfseries\small,coltitle=warnrule,title=#1,attach title to upper={\ \ },
+  before skip=8pt,after skip=8pt}
+
+% ── Tables ───────────────────────────────────────────────────
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{K}[1]{>{\raggedright\arraybackslash}p{#1}}
+% \begin{keys}{4cm} ... \end{keys}: two-column table that may break across pages
+\newenvironment{keys}[1]
+  {\small\begin{longtable}{@{}K{#1}>{\raggedright\arraybackslash}p{\dimexpr\linewidth-#1-2\tabcolsep\relax}@{}}\toprule}
+  {\bottomrule\end{longtable}\vspace{-6pt}}
+\newcommand{\head}[2]{\sffamily\bfseries #1 & \sffamily\bfseries #2\\\midrule\endhead}
+
+% ── Figures ──────────────────────────────────────────────────
+\newcommand{\screenshot}[3][0.92]{%
+  \begin{figure}[htbp]\centering
+  \includegraphics[width=#1\linewidth]{#2}
+  \caption{#3}\end{figure}}
+\usepackage[font={small,sf},labelfont=bf]{caption}
+
+\setlist{itemsep=2pt,topsep=4pt}

@@ -1,0 +1,58 @@
+\chapter{Terminal applications}\label{ch:terminal}
+
+The shell configuration is global, so every terminal application gets the same zsh, prompt and
+tools. Ghostty is the main one; iTerm2 and the VS Code terminal only need their font and title
+settings.
+
+\section{Ghostty}
+
+Config: \file{ghostty/.config/ghostty/config}. Reload it with \key{cmd+shift+,}.
+
+\begin{keys}{4.2cm}
+\head{Keys}{Action}
+\key{cmd+`} & Quick terminal: drops from the top of the screen, from any app (needs Accessibility permission)\\
+\key{cmd+t} / \key{cmd+w} & New / close tab\\
+\key{cmd+d} / \key{cmd+shift+d} & Native split right / down\\
+\key{cmd+alt+h/j/k/l} & Move between native splits\\
+\key{cmd+shift+enter} & Zoom the current split\\
+\key{cmd+shift+e} & Equalize splits\\
+\key{cmd+shift+,} & Reload the config\\
+\end{keys}
+
+Native splits and tmux panes do the same job. This setup uses tmux, because tmux sessions keep
+running when the window closes and work the same over SSH.
+
+\section{iTerm2}
+
+\file{install.sh} copies the profile \file{iterm2/dotfiles.json} into iTerm2's DynamicProfiles
+folder. Open iTerm2 \(\rightarrow\) Settings \(\rightarrow\) Profiles, select \ui{dotfiles
+(Catppuccin Mocha)} \(\rightarrow\) \ui{Other Actions\ldots} \(\rightarrow\) \ui{Set as Default}.
+The profile brings the colours, the Nerd Font, left Option as Alt and lets the shell set the tab
+title. iTerm2 itself is not in the Brewfile: \cmd{brew install --cask iterm2}.
+
+\section{VS Code terminal}
+
+Open the command palette (\key{cmd+shift+p}) \(\rightarrow\) \ui{Preferences: Open User Settings
+(JSON)} and merge in \file{vscode/settings.json}. All settings start with
+\texttt{terminal.integrated.}:
+
+\begin{keys}{5.4cm}
+\head{Setting}{Why}
+\texttt{fontFamily} & \texttt{JetBrainsMono Nerd Font Mono}, for \texttt{eza} icons\\
+\texttt{tabs.title} = \texttt{\$\{sequence\}} & Tabs show the \texttt{host:path} title set by zsh\\
+\texttt{macOptionIsMeta} = \texttt{true} & Option works as Alt (\key{M-b}, \key{M-f}, \key{M-c})\\
+\texttt{minimumContrastRatio} = \texttt{1} & Keeps the theme colours as they are\\
+\end{keys}
+
+tmux is optional inside VS Code; plain zsh works fine there.
+
+\section{Copy and paste}\label{sec:clipboard}
+
+\begin{keys}{3.6cm}
+\head{Where}{How}
+Ghostty, no tmux & Select with the mouse: it is copied automatically (\texttt{copy-on-select}). \key{cmd+c} also works. Paste with \key{cmd+v}.\\
+Inside tmux & Drag with the mouse and release: the selection goes to the macOS clipboard. Hold \key{Option} while dragging to select freely across panes. Paste with \key{cmd+v}.\\
+tmux, keyboard only & \key{C-a v} enters copy mode, move with \key{h/j/k/l}, \key{v} starts a selection, \key{C-v} toggles a block selection, \key{y} copies.\\
+Neovim & \key{y} yanks to the macOS clipboard (\key{yy} a line, \key{v} then \key{y} a selection). \key{p} pastes in normal mode, \key{cmd+v} in insert mode.\\
+Over SSH & The same. Neovim in a container or on a robot copies through OSC~52: container \(\rightarrow\) SSH \(\rightarrow\) tmux \(\rightarrow\) Ghostty \(\rightarrow\) macOS clipboard. Nothing to install.\\
+\end{keys}

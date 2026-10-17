@@ -1,0 +1,78 @@
+\chapter{Overview}\label{ch:overview}
+
+This repository is the complete terminal setup of a daily Mac: the terminal application, the
+multiplexer, the shell and the editor. All of them share one colour theme (Catppuccin Mocha), one
+font (JetBrainsMono Nerd Font) and know about each other.
+
+\screenshot{tmux}{A tmux session on the Mac: the web app \emph{molly-dashboard} runs in window 1,
+window 2 holds Neovim and a file tree inside the \emph{humble} container (over SSH) and the tunnel
+status on the Mac.}
+
+\section{The layers}
+
+Each tool does one job and they are stacked on top of each other:
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}l L l@{}}
+\toprule
+\sffamily\bfseries Layer & \sffamily\bfseries What it does & \sffamily\bfseries How you reach it\\
+\midrule
+Ghostty  & The terminal application (the window). iTerm2 and the VS Code terminal work too. & Applications \\
+tmux     & Many terminals in one window: sessions, windows, split panes, popups, and the status bar with CPU, GPU, RAM, temperature and network speed. & \key{t} \\
+zsh      & The shell you type commands into, with completion, history search and the helpers described in this manual. & always running \\
+starship & Draws the prompt: \texttt{dotfiles main* >}. & automatic \\
+Neovim   & The code editor, opened inside a tmux pane. & \key{nvim} or \key{v} \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+A typical start of the day: open Ghostty, type \key{t} to enter tmux, split the window with
+\key{C-a |}, run \cmd{nvim .} on one side and a dev server or \cmd{ssh humble} on the other.
+
+\section{Where things run}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}l L@{}}
+\toprule
+\sffamily\bfseries Machine & \sffamily\bfseries What runs there\\
+\midrule
+Mac & Ghostty, tmux, zsh, Neovim, the web apps (PM2, Docker, \texttt{pnpm dev}), Cloudflare Tunnel. No ROS. \\
+Dev containers & Ubuntu with ROS~2 Humble or Jazzy, or ROS~1 Noetic. zsh, Neovim and the ROS helpers. Reached with \cmd{ssh humble}, \cmd{ssh jazzy}, \cmd{ssh noetic}. \\
+Robots, Jetsons & The same zsh and Neovim, installed with the Linux installer. Reached over SSH. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+tmux always runs on the Mac. A pane that is connected over SSH shows the remote shell, while the
+status bar keeps showing the Mac. The tab title and the tmux window name show the host
+(\texttt{humble:\textasciitilde/ros2\_ws}), so it is always clear where a pane is.
+
+\section{Conventions in this manual}
+
+\begin{itemize}
+  \item \key{C-a} means \emph{Ctrl+a}, the tmux prefix. \key{C-a |} means: press \key{C-a},
+        release, then press \key{|}.
+  \item \key{Space} in Neovim is the \emph{leader} key. \key{Space ff} means: press Space, then
+        \key{f}, then \key{f}. Press Space and wait to see every option.
+  \item \key{M-} is the left Option key (Alt), \key{cmd} is the Command key.
+  \item Commands in \cmd{this colour} are typed in the shell. Paths look like \file{~/.config/apps}.
+\end{itemize}
+
+\section{The repository}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{@{}l L@{}}
+\toprule
+\sffamily\bfseries Folder & \sffamily\bfseries Contents\\
+\midrule
+\file{ghostty/}, \file{tmux/}, \file{zsh/}, \file{nvim/}, \file{starship/}, \file{git/}, \file{lazygit/} & Config packages, linked into \file{~} with GNU Stow \\
+\file{iterm2/}, \file{vscode/} & iTerm2 profile and VS Code terminal settings \\
+\file{ssh/} & Templates for \file{~/.ssh/config} and the host files \\
+\file{templates/} & App list, ROS \file{.clangd} / \file{.clang-format}, colcon defaults \\
+\file{install.sh} & macOS installer \\
+\file{container/install.sh} & Linux installer for containers, Jetsons and robots \\
+\file{tests/} & Smoke test and the ROS integration test used by CI \\
+\file{docs/} & Markdown guides and this manual (\file{docs/manual/}) \\
+\bottomrule
+\end{tabularx}
+\end{center}

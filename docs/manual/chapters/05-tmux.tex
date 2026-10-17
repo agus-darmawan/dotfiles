@@ -1,0 +1,110 @@
+\chapter{tmux}\label{ch:tmux}
+
+tmux runs many terminals inside one window and keeps them alive when the window closes. Config:
+\file{tmux/.config/tmux/tmux.conf}; there are no plugins to install.
+
+\section{Concepts}
+
+\begin{keys}{2.6cm}
+\head{Term}{Meaning}
+Session & A named workspace, for example \texttt{main}, or one per project or per robot. Sessions keep running in the background.\\
+Window & A tab inside a session, shown in the status bar as \texttt{1 molly}, \texttt{2 humble}.\\
+Pane & A split inside a window.\\
+Prefix & \key{C-a}: press it, release, then press the next key.\\
+\end{keys}
+
+Start or re-attach with \key{t} (session \texttt{main}). Closing Ghostty does not stop tmux; type
+\key{t} again to get everything back.
+
+\section{The status bar}
+
+The bar sits at the top and is plain text:
+
+\begin{plain}
+ main  1 molly  2 humble      tunnel CPU 12% GPU 5% RAM 9.1/24G 48C D 1.2M U 120K docker 2 BAT 85%+  14:22
+\end{plain}
+
+\begin{keys}{3.4cm}
+\head{Segment}{Meaning}
+\texttt{main} & Session name. Blue normally, red while the prefix is pressed, grey when the outer tmux is turned off with \key{F12}\\
+\texttt{1 molly} & Windows. \texttt{Z} zoomed pane, \texttt{*} activity in a background window, \texttt{S} panes typing in sync\\
+\texttt{tunnel} & A \texttt{cloudflared} process is running (chapter~\ref{ch:web})\\
+\texttt{CPU 12\%} & CPU load\\
+\texttt{GPU 5\%} & GPU busy, from \texttt{ioreg} (no extra tool)\\
+\texttt{RAM 9.1/24G} & Memory used / total\\
+\texttt{48C} & CPU temperature, from \texttt{macmon} (Apple Silicon). Appears a few seconds after tmux starts\\
+\texttt{D 1.2M U 120K} & Download / upload speed per second on the default network interface\\
+\texttt{docker 2} & Running containers (hidden when Docker is not running)\\
+\texttt{BAT 85\%+} & Battery; \texttt{+} means on power\\
+\texttt{14:22} & Time\\
+\end{keys}
+
+The bar refreshes every 3 seconds. Every segment is a function in
+\file{tmux/.config/tmux/scripts/status.sh}; run one by hand to debug it:
+\cmd{~/.config/tmux/scripts/status.sh temp}.
+
+\section{Keys}
+
+\subsection{Panes and windows}
+
+\begin{keys}{4.2cm}
+\head{Keys}{Action}
+\key{C-a c} & New window in the current folder\\
+\key{C-a |} or \keyx{C-a \textbackslash} & Split right\\
+\key{C-a -} & Split down\\
+\key{C-h/j/k/l} & Move to the pane left/down/up/right; also moves between Neovim splits. In an SSH pane the key goes to the remote side\\
+\key{C-a h/j/k/l} & Move pane, always the local tmux (also from SSH panes)\\
+\key{C-a H/J/K/L} & Resize the pane (repeatable)\\
+\key{C-a m} & Zoom the pane, again to restore\\
+\key{C-a 1..9} & Go to window N\\
+\key{C-a Tab} & Last window\\
+\key{C-a n} / \key{C-a p} & Next / previous window\\
+\key{C-a <} / \key{C-a >} & Move the window left / right\\
+\key{C-a ,} & Rename the window\\
+\key{C-a x} / \key{C-a X} / \key{C-a Q} & Close pane / window / session (asks first)\\
+\key{C-a y} & Toggle typing into all panes of the window\\
+\key{C-a v} & Copy mode (section~\ref{sec:clipboard})\\
+\key{C-a C-l} & Clear the screen\\
+\key{C-a r} & Reload the config\\
+\end{keys}
+
+\subsection{Popups and pickers}
+
+\begin{keys}{2.4cm}
+\head{Keys}{Action}
+\key{C-a f} & Sessionizer: pick a project folder, open or switch to a session named after it\\
+\key{C-a s} & Sessions and windows as a tree; \key{x} closes the selected one\\
+\key{C-a S} & SSH hosts: \key{enter} new window, \key{ctrl-v} / \key{ctrl-s} split, \key{ctrl-o} here\\
+\key{C-a d} & Running Docker containers: open a shell inside\\
+\key{C-a a} & Web apps: start one in a new window (chapter~\ref{ch:web})\\
+\key{C-a g} & lazygit in the current folder\\
+\key{C-a D} & lazydocker\\
+\key{C-a b} & btop\\
+\key{C-a t} & Floating scratch terminal; its content stays when it is closed\\
+\key{F12} & Turn the outer tmux off and on (for a tmux running on a robot)\\
+\end{keys}
+
+\screenshot[0.7]{ssh-picker}{\key{C-a S}: SSH host picker with the connection details of the
+selected host.}
+
+\section{Sessions per project}
+
+The sessionizer (\key{C-a f}, or \cmd{ts} in the shell) lists folders under \file{~/apps},
+\file{~/web}, \file{~/Projects}, \file{~/projects}, \file{~/dev}, \file{~/workspace},
+\file{~/Developer}, \file{~/ros2_ws}, \file{~/dotfiles} and \file{~/Documents/GitHub}. Picking
+one opens a session named after the folder, or switches to it when it exists.
+
+\begin{keys}{3.6cm}
+\head{Command}{Action}
+\cmd{t} & Attach or create the session \texttt{main}\\
+\cmd{ta}, \cmd{tl}, \cmd{tk <name>} & Attach, list, kill a session\\
+\cmd{ts} & Sessionizer\\
+\cmd{dev <host>} & Session named after an SSH host with windows \texttt{code}, \texttt{build}, \texttt{run}, each already connected (chapter~\ref{ch:containers})\\
+\end{keys}
+
+\section{Nested tmux}
+
+When you SSH into a robot that runs its own tmux, the keys would go to the Mac's tmux. Press
+\key{F12}: the session name turns grey, the bar shows \texttt{OFF(F12)} and every key goes to the
+robot's tmux. Press \key{F12} again to come back. The robot's tmux keeps its default prefix
+\key{C-b}, so the two never clash.

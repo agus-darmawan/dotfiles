@@ -1,0 +1,66 @@
+\chapter{Troubleshooting}\label{ch:troubleshooting}
+
+Run \cmd{~/dotfiles/tests/smoke.sh} first: it usually points at the broken part.
+
+\section{Terminal}
+
+\begin{keys}{5.4cm}
+\head{Problem}{Fix}
+Icons show as boxes or \texttt{?} & The Nerd Font is missing or not selected: \cmd{brew install --cask font-jetbrains-mono-nerd-font}, restart the terminal\\
+\key{cmd+`} does nothing & Give Ghostty Accessibility permission and restart it\\
+\key{M-c}, \key{M-b} type special characters & Use the left Option key. iTerm2: select the \emph{dotfiles} profile. VS Code: \texttt{macOptionIsMeta}\\
+Tab title shows \texttt{zsh}, not \texttt{host:path} & iTerm2: the \emph{dotfiles} profile. VS Code: \texttt{tabs.title = \$\{sequence\}}\\
+Colours or backspace wrong over SSH & Ghostty installs its terminfo on the remote host; otherwise \texttt{export TERM=xterm-256color} there\\
+\end{keys}
+
+\section{tmux}
+
+\begin{keys}{5.4cm}
+\head{Problem}{Fix}
+No status bar & You are not in tmux yet: type \key{t}\\
+Old bar with icons after an update & The old tmux server still runs: \cmd{tmux kill-server}, then \key{t}\\
+\texttt{missing or unsuitable terminal: tmux-256color} & \cmd{./install.sh --no-brew} compiles the terminfo\\
+No temperature & \cmd{brew install macmon} (Apple Silicon); the value appears a few seconds after tmux starts\\
+No \texttt{D}/\texttt{U} & Needs two refreshes (about 6 seconds); follows the default route's interface\\
+A segment is empty & Run it by hand: \cmd{~/.config/tmux/scripts/status.sh gpu}\\
+\key{C-h/j/k/l} in an SSH pane stays inside & On purpose: the key goes to the remote side. \key{C-a h/j/k/l} always moves the local pane\\
+Keys go to the wrong tmux on a robot & \key{F12} turns the outer tmux off and on\\
+An SSH window keeps the Mac's name & The remote shell does not set a title; rename it with \key{C-a ,}\\
+\end{keys}
+
+\section{Shell}
+
+\begin{keys}{5.4cm}
+\head{Problem}{Fix}
+Pasted commands stop after \cmd{exec zsh} & \cmd{exec zsh} replaces the shell; run it on its own\\
+\texttt{zsh compinit: insecure directories} & \cmd{compaudit | xargs chmod g-w,o-w}\\
+Plugins not loading & Delete the broken one in \file{~/.local/share/zsh/plugins} and open a new shell\\
+\cmd{cd} behaves oddly & \cmd{cd} is zoxide; \cmd{builtin cd <path>} changes literally\\
+\cmd{ros}, \cmd{cb} not found on the Mac & On purpose: ROS helpers exist only where \file{/opt/ros} exists\\
+\cmd{nvim}: \texttt{exec format error} & \file{container/install.sh} was run on the Mac. Remove the Linux binaries: \cmd{file -L ~/.local/bin/* | grep ELF}\\
+\end{keys}
+
+\section{Web apps and tunnel}
+
+\begin{keys}{5.4cm}
+\head{Problem}{Fix}
+\texttt{app: 'x' is not in \textasciitilde/.config/apps} & Add a line \texttt{x \textasciitilde/path/to/x [command]}; \cmd{app ls} shows the list\\
+\cmd{app} opens a window but nothing runs & The folder has no \file{package.json}, compose or PM2 file: add the start command\\
+\cmd{tun add}: no catch-all rule & The config needs \texttt{- service: http\_status:404} as the last rule\\
+Hostname does not resolve & The DNS step needs \file{~/.cloudflared/cert.pem} (\cmd{cloudflared tunnel login})\\
+\cmd{tun restart} does not fit your setup & Set \texttt{CLOUDFLARED\_RESTART} in \file{~/.zshrc.local}\\
+\end{keys}
+
+\section{Containers and Neovim}
+
+\begin{keys}{5.4cm}
+\head{Problem}{Fix}
+\cmd{ssh humble} refused & The container must run sshd on \texttt{127.0.0.1:2222}\\
+\texttt{GLIBC\_2.34 not found} & Re-run \file{container/install.sh}: it picks the build for old glibc\\
+\cmd{git diff}: \texttt{delta: not found} & Pull the latest dotfiles; git falls back to \texttt{less}\\
+No completion, \key{gd} does nothing & \cmd{:checkhealth vim.lsp}; is the server in \cmd{:Mason}?\\
+clangd does not know ROS headers & Build once (\cmd{cbp <pkg>} or \key{Space rb}), then \key{Space rc}\\
+\key{Space r} keys missing & Only where ROS is available; start Neovim from a sourced shell\\
+Treesitter parsers do not install & Needs the tree-sitter CLI and a C compiler (\cmd{xcode-select --install}), then \cmd{:TSUpdate}\\
+Something broke after \cmd{:Lazy sync} & \cmd{:Lazy restore} returns to \file{lazy-lock.json}\\
+\end{keys}

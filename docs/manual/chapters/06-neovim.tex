@@ -1,0 +1,126 @@
+\chapter{Neovim}\label{ch:neovim}
+
+Neovim is configured in \file{nvim/.config/nvim/} with about twenty plugins managed by lazy.nvim:
+blink.cmp (completion), snacks.nvim (pickers, explorer, terminal, lazygit), which-key, gitsigns,
+conform (formatting), nvim-lspconfig with Mason, nvim-treesitter, flash, mini.surround and
+mini.pairs.
+
+\screenshot{nvim}{clangd completion with the signature of the selected member, in a container over SSH.}
+
+\section{First steps}
+
+\begin{itemize}
+  \item New to Vim motions? Run \cmd{:Tutor} first (about 30 minutes).
+  \item Press \key{Space} and wait: which-key lists every group and key. \key{Space sk} searches all
+        keymaps.
+  \item \cmd{:Lazy} shows the plugins, \cmd{:Mason} the language servers and tools,
+        \cmd{:checkhealth} what is missing.
+\end{itemize}
+
+\section{Find and search}
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{Space Space} & Smart file finder (recent and frequent files first)\\
+\key{Space /} & Grep the project\\
+\key{Space ,} & Open buffers\\
+\key{Space e} & File explorer on the right (\key{a} add, \key{d} delete, \key{r} rename)\\
+\key{Space ff}, \key{fg}, \key{fr}, \key{fp}, \key{fc} & Files, git files, recent, projects, Neovim config\\
+\key{Space fy} & Copy the file path\\
+\key{Space sw} & Grep the word under the cursor or the selection\\
+\key{Space sb}, \key{sh}, \key{sk}, \key{sc} & Buffer lines, help, keymaps, commands\\
+\key{Space sd}, \key{sD} & Diagnostics, of the project or the buffer\\
+\key{Space su}, \key{sr}, \key{sq} & Undo history, resume the last picker, quickfix list\\
+\key{Space :} & Command history\\
+\end{keys}
+
+\section{Code}
+
+These keys work in a buffer with a language server attached.
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{gd}, \key{gD}, \key{gr}, \key{gI}, \key{gy} & Definition, declaration, references, implementation, type definition\\
+\key{K} / \key{gK} & Hover documentation / signature help (\key{C-k} in insert mode)\\
+\key{Space ca} & Code action (imports, quick fixes)\\
+\key{Space cr} & Rename the symbol in the whole project\\
+\key{Space cR} & Rename the file and update imports\\
+\key{Space cf} & Format (format on save is on; \key{Space uf} toggles it)\\
+\key{Space cd} & Diagnostics of the current line\\
+\key{Space ch} & Switch between header and source (C/C++)\\
+\key{Space ss} / \key{Space sS} & Symbols in the buffer / workspace\\
+\key{]d} \key{[d}, \key{]e} \key{[e} & Next / previous diagnostic, error\\
+\key{]]} \key{[[} & Next / previous reference of the word under the cursor\\
+\key{Space xx} / \key{Space xq} & Project diagnostics / toggle the quickfix list\\
+\key{Space cl} & LSP health check\\
+\key{Space cm} & Mason\\
+\end{keys}
+
+Completion: \key{Tab} / \key{S-Tab} select, \key{Enter} accepts, \key{C-Space} opens the menu.
+
+\section{Editing, buffers and windows}
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{s} + two letters & Flash: jump anywhere on the screen\\
+\key{S} & Select a Treesitter node (function, block)\\
+\key{gsa}, \key{gsd}, \key{gsr} & Surround add, delete, replace (\key{gsaiw"} wraps a word in quotes)\\
+\key{gcc} / \key{gc} & Comment a line / a selection\\
+\key{A-j} / \key{A-k} & Move lines down / up\\
+\key{C-s} & Save\\
+\key{S-h} / \key{S-l} & Previous / next buffer\\
+\key{Space bd}, \key{bD}, \key{bb} & Delete buffer, delete other buffers, alternate buffer\\
+\key{Space -} / \key{Space |} & Split below / right\\
+\key{C-h/j/k/l} & Move between splits, and on into tmux panes\\
+\key{Space wd} / \key{Space wo} & Close the window / keep only this window\\
+\key{Space qq} & Quit everything\\
+\end{keys}
+
+\section{Git}
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{Space gg} & lazygit (\key{space} stage, \key{c} commit, \key{P} push, \key{?} help)\\
+\key{Space gl} / \key{Space gf} & lazygit log / history of this file\\
+\key{Space gs} / \key{Space gb} & Git status / branches\\
+\key{]h} / \key{[h} & Next / previous changed hunk\\
+\key{Space ghs}, \key{ghr}, \key{ghp}, \key{ghb} & Stage, reset, preview, blame a hunk\\
+\key{Space ub} & Inline blame on / off\\
+\key{Space go} & Open the line on GitHub\\
+\end{keys}
+
+\section{Terminal and toggles}
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{C-/} & Toggle a terminal at the bottom\\
+\key{Space tt} / \key{Space tv} & Floating / side terminal\\
+\key{Space td} / \key{Space tb} & lazydocker / btop\\
+\key{Space uf} & Format on save on / off\\
+\key{Space uh}, \key{ud}, \key{uw}, \key{us} & Inlay hints, diagnostics, wrap, spelling\\
+\key{Space ul}, \key{uL}, \key{ug}, \key{uD} & Line numbers, relative numbers, indent guides, dim\\
+\key{Space un} & Dismiss notifications\\
+\end{keys}
+
+\section{Languages}
+
+Every language is registered in one file, \file{lua/config/languages.lua}: the Treesitter parser,
+the language server and the formatter.
+
+\begin{keys}{3.6cm}
+\head{Language}{Server, formatter}
+C / C++ & clangd; clang-format, only when the project has a \file{.clang-format}\\
+Python & basedpyright, ruff (lint and format)\\
+CMake & neocmake\\
+ROS XML, URDF, xacro, launch & lemminx\\
+\texttt{.msg} / \texttt{.srv} / \texttt{.action} & Syntax highlighting\\
+TypeScript, React, Next.js & vtsls, ESLint, Tailwind CSS; biome when \file{biome.json} exists, otherwise prettier\\
+HTML, CSS, JSON, YAML, TOML & html, cssls, jsonls (with SchemaStore), yamlls, taplo\\
+Bash / zsh & bashls, shfmt\\
+Docker & dockerls\\
+Dart & dart language server when the Dart SDK is installed\\
+Lua & lua\_ls, stylua\\
+\end{keys}
+
+On machines without internet (robots), \texttt{export NVIM\_OFFLINE=1} in \file{~/.zshrc.local}
+skips every automatic download of parsers, servers and plugin updates.

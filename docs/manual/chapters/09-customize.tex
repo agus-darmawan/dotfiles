@@ -1,0 +1,117 @@
+\chapter{Customization}\label{ch:customize}
+
+Two ways to change things:
+
+\begin{itemize}
+  \item \textbf{Edit the repository} for changes on every machine. Configs are symlinked, so editing
+        \file{~/.config/nvim/...} edits \file{~/dotfiles/...}; commit and push as usual.
+  \item \textbf{Local files} for one machine only. They are not in git:
+\end{itemize}
+
+\begin{keys}{5.6cm}
+\head{File}{Read by}
+\file{~/.zshrc.local} & zsh, last\\
+\file{~/.config/tmux/tmux.local.conf} & tmux, after the main config\\
+\file{~/.config/git/config.local} & git, included at the end\\
+\file{~/.config/nvim/lua/config/local.lua} & Neovim, after everything else\\
+\file{~/.ssh/config.d/*} & ssh\\
+\file{~/.config/apps} & \cmd{app}\\
+\end{keys}
+
+\section{Shell}
+
+\begin{shell}
+# ~/.zshrc.local
+# folders searched by the sessionizer (C-a f)
+export TMUX_SESSIONIZER_PATHS="$HOME/apps $HOME/web $HOME/ros2_ws"
+# another tunnel config for tun
+export CLOUDFLARED_CONFIG=~/.cloudflared/home.yml
+# containers: don't source ROS automatically
+export ROS_AUTO=0
+# robots without internet: no automatic downloads in Neovim
+export NVIM_OFFLINE=1
+\end{shell}
+
+\begin{itemize}
+  \item Shared aliases go into \file{zsh/.config/zsh/40-aliases.zsh}.
+  \item More zsh plugins: add \texttt{plug <github-user>/<repo>} to \file{20-plugins.zsh}.
+  \item The prompt is \file{starship/.config/starship.toml}; add \texttt{\$hostname} to its
+        \texttt{format} to show the host again.
+\end{itemize}
+
+\section{tmux}
+
+\begin{plain}
+# ~/.config/tmux/tmux.local.conf
+set -g prefix C-b                 # back to the default prefix
+bind C-b send-prefix
+set -g status-position bottom     # status bar at the bottom
+\end{plain}
+
+\textbf{Status bar segments.} \texttt{status-right} in \file{tmux.conf} calls
+\file{scripts/status.sh} once per segment: \texttt{tunnel}, \texttt{cpu}, \texttt{gpu},
+\texttt{mem}, \texttt{temp}, \texttt{netspeed}, \texttt{docker}, \texttt{battery} (and \texttt{net},
+the local IP, not shown by default). To add one, write a function and a line for it in the
+\texttt{case} at the bottom of \file{status.sh}:
+
+\begin{shell}
+pm2_seg() {   # online PM2 processes
+  command -v pm2 >/dev/null || return 0
+  printf 'pm2 %s ' "$(pm2 jlist | jq '[.[] | select(.pm2_env.status == "online")] | length')"
+}
+case "$1" in
+  pm2) pm2_seg ;;
+  # ...
+\end{shell}
+
+Then add \texttt{\#(\$S/status.sh pm2)} to \texttt{status-right} and reload with \key{C-a r}.
+
+\section{Neovim}
+
+\textbf{Add a language} in \file{lua/config/languages.lua}: the parser in \texttt{M.treesitter},
+the server in \texttt{M.servers()}, the formatter in \texttt{M.formatters\_by\_ft}. Restart Neovim;
+Mason installs the server.
+
+\textbf{Add a plugin} with a new file in \file{lua/plugins/} that returns a lazy.nvim spec;
+\cmd{:Lazy} installs it and \file{lazy-lock.json} records the version.
+
+\begin{keys}{4.4cm}
+\head{What}{Where}
+General keymaps & \file{lua/config/keymaps.lua}\\
+Keymaps of a plugin & The \texttt{keys} of its spec in \file{lua/plugins/}\\
+LSP keymaps & \file{lua/plugins/lsp.lua}\\
+ROS keymaps and commands & \file{lua/util/ros.lua}\\
+Options & \file{lua/config/options.lua}\\
+Theme & \file{lua/plugins/colorscheme.lua} (latte, frappe, macchiato, mocha)\\
+\end{keys}
+
+\begin{plain}
+-- ~/.config/nvim/lua/config/local.lua  (this machine only)
+vim.g.autoformat = false
+vim.opt.relativenumber = false
+\end{plain}
+
+\section{SSH hosts and git identity}
+
+Any file in \file{~/.ssh/config.d/} is read, so hosts can be split by project; every host appears
+in \cmd{s} and \key{C-a S}.
+
+\begin{plain}
+# ~/.ssh/config.d/robots
+Host go2
+  HostName 192.168.123.18
+  User unitree
+
+Host go2-jetson
+  HostName 192.168.123.15
+  User unitree
+  ProxyJump go2
+\end{plain}
+
+A different git identity for work repositories:
+
+\begin{plain}
+# ~/.config/git/config.local
+[includeIf "gitdir:~/ezra/"]
+    path = ~/.config/git/work
+\end{plain}

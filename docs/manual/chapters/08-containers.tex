@@ -1,0 +1,158 @@
+\chapter{ROS containers and robots}\label{ch:containers}
+
+ROS lives in Ubuntu containers (ROS~1 Noetic on 20.04, ROS~2 Humble on 22.04, Jazzy on 24.04) and
+on the robots. The Mac has no ROS at all: tmux runs on the Mac and its panes SSH into a container
+or a robot, where zsh, Neovim and the ROS helpers are installed.
+
+\section{The container}
+
+Share the configuration (mount the repository), never the data: plugins and Mason binaries are
+built per operating system, so they live in volumes.
+
+\begin{plain}
+# compose.yaml in the ROS workspace
+services:
+  humble:
+    build: .
+    container_name: humble
+    network_mode: host
+    working_dir: /home/dev/ros2_ws
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+    volumes:
+      - ./:/home/dev/ros2_ws
+      - ~/dotfiles:/home/dev/dotfiles          # config, shared with the Mac
+      - nvim-data:/home/dev/.local/share/nvim  # plugins + Mason (Linux binaries)
+      - zsh-data:/home/dev/.local/share/zsh    # zsh plugins + history
+volumes:
+  nvim-data:
+  zsh-data:
+\end{plain}
+
+The image needs a \texttt{dev} user and an SSH server, one port per container: 2222 humble, 2223
+jazzy, 2224 noetic. With bridge networking, keep port 22 and publish it on localhost only, with
+\texttt{ports: ["127.0.0.1:2222:22"]} in the compose file.
+
+\begin{plain}
+FROM ros:humble                            # or ros:jazzy, ros:noetic
+RUN apt-get update && apt-get install -y openssh-server sudo && \
+    useradd -m -s /bin/bash -G sudo dev && \
+    echo "dev ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/dev && \
+    mkdir -p /run/sshd && sed -i 's/^#\?Port .*/Port 2222/' /etc/ssh/sshd_config
+COPY --chown=dev:dev authorized_keys /home/dev/.ssh/authorized_keys
+CMD ["/usr/sbin/sshd", "-D"]
+\end{plain}
+
+Host networking on a Mac works out of the box in OrbStack; Docker Desktop needs it switched on in
+its settings.
+
+\section{Install the dotfiles inside}
+
+Once per container; the volumes keep the result across rebuilds:
+
+\begin{shell}
+docker exec -it -u dev humble bash
+~/dotfiles/container/install.sh       # 2-4 minutes, x86_64 or arm64
+\end{shell}
+
+It installs zsh, Neovim, fzf, starship, zoxide, lazygit, Node and eza, links the \texttt{zsh},
+\texttt{nvim}, \texttt{starship}, \texttt{git} and \texttt{lazygit} configs, installs the plugins
+and makes zsh the login shell. Options: \cmd{--no-apt} when the image already has the apt packages,
+\cmd{--minimal} to skip Node (faster, but language servers that need npm will not install).
+
+On Ubuntu 20.04 (glibc 2.31) the installer takes Neovim from \texttt{neovim/neovim-releases},
+built for old glibc, and skips the tree-sitter CLI; Neovim then uses its bundled parsers.
+
+\section{SSH into the container}
+
+\file{install.sh} on the Mac created \file{~/.ssh/config.d/containers}:
+
+\begin{keys}{2.4cm}
+\head{Host}{Container}
+\cmd{humble} & ROS~2 Humble, Ubuntu 22.04, \texttt{localhost:2222}\\
+\cmd{jazzy} & ROS~2 Jazzy, Ubuntu 24.04, \texttt{localhost:2223}\\
+\cmd{noetic} & ROS~1 Noetic, Ubuntu 20.04, \texttt{localhost:2224}\\
+\end{keys}
+
+All of them connect as \texttt{dev}, forward your SSH agent (so \cmd{git push} works inside) and do
+not pin host keys, because containers are rebuilt often. Thanks to connection sharing, the first
+connection authenticates and every further pane to the same host opens instantly.
+
+\begin{keys}{3.6cm}
+\head{Keys / command}{Action}
+\cmd{ssh humble} & One shell in the container\\
+\cmd{dev humble} & tmux session \texttt{humble} with windows \texttt{code}, \texttt{build}, \texttt{run}, each already in the container\\
+\key{C-a S} or \cmd{s} & Pick any host\\
+\key{C-a d} or \cmd{dsh} & \cmd{docker exec} shell in a running container, no SSH needed\\
+\end{keys}
+
+\section{ROS helpers}
+
+The helpers exist only where \file{/opt/ros} exists. The installed distro is sourced
+automatically (\texttt{export ROS\_AUTO=0} turns that off) and the helpers know whether they run
+under ROS~1 or ROS~2.
+
+\begin{keys}{3.4cm}
+\head{Command}{Action}
+\cmd{ros [distro]} & Source \file{/opt/ros/<distro>} and the nearest workspace overlay\\
+\cmd{rosws} & Print the workspace root, also before the first build\\
+\cmd{cb} / \cmd{cbp <pkg>} & Build the workspace / packages with their dependencies; writes \file{compile_commands.json} for clangd. colcon on ROS~2; \cmd{catkin build} or \cmd{catkin_make} on ROS~1\\
+\cmd{ct [pkg]} & Run the tests and print the results\\
+\cmd{rcl} & Remove \file{build/ install/ devel/ log/} (asks first)\\
+\cmd{rosdomain <id>} & ROS~2: set \texttt{ROS\_DOMAIN\_ID}, shown in the prompt as \texttt{\#id}\\
+\cmd{rosmaster <host>} & ROS~1: set \texttt{ROS\_MASTER\_URI} and \texttt{ROS\_IP}, shown as \texttt{@host}\\
+\cmd{rtopic} / \cmd{rnode} & Pick a topic and echo it / pick a node and show its info\\
+\cmd{rtl}, \cmd{rte}, \cmd{rnl} & Topic list, topic echo, node list\\
+\cmd{rl}, \cmd{rr}, \cmd{rbag} & Launch, run, bag\\
+\end{keys}
+
+\section{ROS in Neovim}
+
+The \key{Space r} menu appears only where ROS is available (a sourced distro, or colcon or catkin
+on the \texttt{PATH}). Start Neovim from a shell where ROS is sourced.
+
+\screenshot[0.62]{ros-menu}{\key{Space r}: the ROS menu in which-key, inside the \emph{humble} container.}
+
+\begin{keys}{2.6cm}
+\head{Keys}{Action}
+\key{Space rb} & Build the package of the current file in the background: errors go to the quickfix list, \file{compile_commands.json} is merged and clangd restarts\\
+\key{Space rB} & Build the whole workspace\\
+\key{Space rL} & Last build log\\
+\key{Space rc} & Merge \file{compile_commands.json}\\
+\key{Space rt} & Topics: echo, hz or info\\
+\key{Space rn} & Nodes: info\\
+\key{Space rl} & Pick a launch file: \cmd{ros2 launch} / \cmd{roslaunch}\\
+\key{Space rr} & Pick an executable: \cmd{ros2 run} / \cmd{rosrun}\\
+\end{keys}
+
+Commands: \cmd{:RosBuild [pkg]}, \cmd{:RosLog}, \cmd{:RosCompileDb}.
+
+\screenshot[0.82]{ros-quickfix}{\key{Space rb} with a compiler error: the error is in the quickfix
+list and shown on the line; \key{]q} / \key{[q} jump between errors.}
+
+For clangd, copy \file{.clangd} and \file{.clang-format} from \file{templates/ros2/} into the
+workspace root. The container installer also writes \file{~/.colcon/defaults.yaml}, so a plain
+\cmd{colcon build} exports compile commands too.
+
+\section{Robots and Jetsons}
+
+The same installer works directly on a robot:
+
+\begin{shell}
+git clone https://github.com/agus-darmawan/dotfiles ~/dotfiles
+~/dotfiles/container/install.sh --minimal
+\end{shell}
+
+On the Mac, add the robot to \file{~/.ssh/config.d/robots}, copy your key once with
+\cmd{skey go2}, then:
+
+\begin{keys}{4.2cm}
+\head{Command}{Action}
+\cmd{dev go2} & tmux session on the robot (windows code, build, run)\\
+\cmd{sall go2 lite3} & One window, one pane per robot, typing goes to all of them (\key{C-a y} toggles)\\
+\cmd{sfwd <host> <port>} & Forward a remote port (dashboard, Foxglove) to \texttt{localhost}\\
+\cmd{skey <host>} & Copy your ed25519 key to a host\\
+\end{keys}
+
+Without internet on the robot, add \texttt{export NVIM\_OFFLINE=1} to its \file{~/.zshrc.local}. When
+the robot runs its own tmux, press \key{F12} on the Mac (section~\ref{ch:tmux}).

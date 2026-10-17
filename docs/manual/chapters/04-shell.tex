@@ -1,0 +1,97 @@
+\chapter{The shell}\label{ch:shell}
+
+zsh is configured in \file{zsh/.config/zsh/}; the files load in name order (\file{00-env.zsh},
+\file{10-options.zsh}, \ldots, \file{80-ros.zsh}). Machine-specific settings go into
+\file{~/.zshrc.local}, which is loaded last and not in git.
+
+\section{Prompt and title}
+
+The prompt is one line of plain ASCII, without icons:
+
+\begin{plain}
+dotfiles main* > _
+patrol_controller main humble #42 12s > _
+\end{plain}
+
+\begin{keys}{3.4cm}
+\head{Part}{Meaning}
+\texttt{dotfiles} & The current folder (last path component only)\\
+\texttt{main*} & Git branch, then \texttt{*} modified, \texttt{+} staged, \texttt{?} untracked,
+\texttt{\^{}}/\texttt{v} ahead/behind, \texttt{!} conflict\\
+\texttt{humble \#42} & ROS distro and \texttt{ROS\_DOMAIN\_ID}, or \texttt{noetic @go2} for a ROS~1
+master. Only where ROS is sourced (containers, robots)\\
+\texttt{12s} & How long the last command took, when it took more than 2 seconds\\
+\texttt{>} & Green, or red after a failed command\\
+\end{keys}
+
+The host is not in the prompt. Instead, zsh sets the window and tab title to
+\texttt{host:path}, for example \texttt{macbook:\textasciitilde/apps/molly} or
+\texttt{humble:\textasciitilde/ros2\_ws}. Ghostty, iTerm2, VS Code and tmux show it, and a tmux
+window connected over SSH is named after the remote host.
+
+\section{Line editing}
+
+\begin{keys}{4cm}
+\head{Keys}{Action}
+\key{Tab} & Completion menu with fuzzy search and previews (folders, files, containers, SSH hosts); \key{<} / \key{>} switch groups\\
+\key{Right} or \key{C-Space} & Accept the grey suggestion from history\\
+\key{Up} / \key{Down}, \key{C-p} / \key{C-n} & Search history for what is already typed\\
+\key{C-r} & Fuzzy search the whole history\\
+\key{C-t} & Fuzzy-find a file and paste its path\\
+\key{M-c} & Fuzzy \texttt{cd} into a subfolder\\
+\key{C-x C-e} & Edit the current command in Neovim\\
+\key{M-b} / \key{M-f} & Jump a word back / forward\\
+\end{keys}
+
+\section{Navigation and files}
+
+\begin{keys}{3.8cm}
+\head{Command}{Action}
+\cmd{cd <part>} & zoxide: jump to the best match among visited folders (\cmd{cd molly})\\
+\cmd{cdi} & zoxide, interactive\\
+\cmd{..} & \cmd{cd ..} (typing a folder name alone changes into it)\\
+\cmd{ls}, \cmd{ll}, \cmd{la} & eza with icons; long; long with hidden files and git status\\
+\cmd{lt}, \cmd{lT} & Tree, 2 or 4 levels, git-ignored files hidden\\
+\cmd{cat <file>} & bat, with syntax colours, no pager\\
+\cmd{take <dir>} & \cmd{mkdir -p} and \cmd{cd}\\
+\cmd{ex <archive>} & Extract tar, zip, gz, xz, zst or 7z\\
+\cmd{v}, \cmd{vi}, \cmd{vim} & Neovim\\
+\cmd{vc} / \cmd{dot} & Open the dotfiles in Neovim / \cmd{cd ~/dotfiles}\\
+\end{keys}
+
+\section{Git}
+
+\begin{keys}{4.6cm}
+\head{Alias}{Command}
+\cmd{g} / \cmd{lg} & git / lazygit\\
+\cmd{gs}, \cmd{gd}, \cmd{gds} & Status, diff, staged diff\\
+\cmd{ga}, \cmd{gaa}, \cmd{gc}, \cmd{gcm "msg"}, \cmd{gca} & Add, add all, commit, commit with message, amend without editing\\
+\cmd{gco}, \cmd{gsw}, \cmd{gcb <name>} & Checkout, switch, new branch\\
+\cmd{gl} / \cmd{gf} & Pull / fetch all and prune\\
+\cmd{glog} & Graph of the last 20 commits\\
+\cmd{gst} / \cmd{gstp} & Stash / stash pop\\
+\end{keys}
+
+Diffs go through delta when it is installed and plain \texttt{less} otherwise (containers and
+robots without delta).
+
+\section{System helpers}
+
+\begin{keys}{3.8cm}
+\head{Command}{Action}
+\cmd{myip} & Local IP addresses (handy on robot networks)\\
+\cmd{ports} & Listening TCP ports and their processes\\
+\cmd{serve} & Static HTTP server in the current folder\\
+\cmd{rsy <src> <dst>} & \cmd{rsync -avhP}\\
+\cmd{top} & btop\\
+\cmd{path} & One \texttt{\$PATH} entry per line\\
+\cmd{zr} & Reload zsh\\
+\cmd{brewup} & Update all Homebrew packages\\
+\cmd{flushdns} & Flush the macOS DNS cache\\
+\cmd{plug-update} & Update the zsh plugins\\
+\end{keys}
+
+\begin{note}[Paste one command at a time]
+When several lines are pasted at once and one of them is \cmd{exec zsh}, the shell is replaced and
+the lines after it are lost. Run commands that restart the shell on their own.
+\end{note}

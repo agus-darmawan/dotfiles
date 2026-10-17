@@ -1,0 +1,57 @@
+\chapter{Quick reference}\label{ch:reference}
+
+\section*{tmux (prefix \key{C-a})}
+
+\begin{keys}{4.4cm}
+\head{Keys}{Action}
+\key{t} & Attach or create session \texttt{main}\\
+\key{C-a |} / \key{C-a -} & Split right / down\\
+\key{C-h/j/k/l} & Move between panes and Neovim splits\\
+\key{C-a c}, \key{C-a 1..9} & New window, go to window\\
+\key{C-a m} & Zoom pane\\
+\key{C-a f} / \key{C-a s} & Open a project / switch session\\
+\key{C-a S} / \key{C-a d} & SSH to a host / shell into a container\\
+\key{C-a a} & Start a web app\\
+\key{C-a g}, \key{C-a D}, \key{C-a b} & lazygit, lazydocker, btop\\
+\key{C-a v} & Copy mode\\
+\key{F12} & Outer tmux off / on\\
+\end{keys}
+
+\section*{Neovim (leader \key{Space})}
+
+\begin{keys}{4.4cm}
+\head{Keys}{Action}
+\key{Space Space} / \key{Space /} & Find files / grep\\
+\key{Space e} & Explorer\\
+\key{gd}, \key{gr}, \key{K} & Definition, references, hover\\
+\key{Space ca} / \key{Space cr} & Code action / rename\\
+\key{Space rb} & Build this ROS package (containers)\\
+\key{Space gg} & lazygit\\
+\key{Space sk} & Search keymaps\\
+\end{keys}
+
+\section*{Shell}
+
+\begin{keys}{4.4cm}
+\head{Command}{Action}
+\cmd{cd <part>}, \key{C-r}, \key{C-t} & Jump to a folder, search history, find a file\\
+\cmd{app <name>}, \cmd{app ls} & Start a web app, list apps\\
+\cmd{tun}, \cmd{tun add <host> <port>} & Tunnel status, add a hostname\\
+\cmd{ssh humble}, \cmd{dev humble} & Shell / tmux session in a container\\
+\cmd{cb}, \cmd{cbp <pkg>} & Build the ROS workspace / a package\\
+\cmd{dps}, \cmd{dsh}, \cmd{lzd} & Containers, shell into one, lazydocker\\
+\cmd{gs}, \cmd{gd}, \cmd{lg} & git status, diff, lazygit\\
+\cmd{myip}, \cmd{ports} & Local IPs, listening ports\\
+\end{keys}
+
+\section*{Files}
+
+\begin{keys}{5.6cm}
+\head{File}{Purpose}
+\file{~/.config/apps} & Web apps for \cmd{app}\\
+\file{~/.cloudflared/config.yml} & Tunnel routes for \cmd{tun}\\
+\file{~/.ssh/config.d/containers} & Container hosts\\
+\file{~/.ssh/config.d/robots} & Robot hosts\\
+\file{~/.zshrc.local} & Shell settings for this machine\\
+\file{~/.dotfiles-backup/} & Configs replaced by the installer\\
+\end{keys}
