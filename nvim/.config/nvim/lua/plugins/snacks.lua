@@ -125,7 +125,6 @@ return {
       },
       { "<leader>td", float_cmd("lazydocker"), desc = "Lazydocker" },
       { "<leader>tb", float_cmd("btop"), desc = "btop" },
-      { "<leader>ty", float_cmd("yazi"), desc = "Yazi" },
       -- misc
       { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete buffer" },
       { "<leader>bD", function() Snacks.bufdelete.other() end, desc = "Delete other buffers" },

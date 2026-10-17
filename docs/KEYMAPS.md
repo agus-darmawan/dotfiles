@@ -156,7 +156,7 @@ Commands: `:Colcon [pkg]` `:ColconTest` `:ColconLog` `:RosTopics` `:RosNodes` `:
 |---|---|
 | `C-/` | toggle bottom terminal |
 | `Space tt` / `Space tv` | float / side terminal |
-| `Space td` / `Space tb` / `Space ty` | lazydocker / btop / yazi |
+| `Space td` / `Space tb` | lazydocker / btop |
 | `Esc Esc` | terminal → normal mode |
 
 ### UI toggles (`Space u`)

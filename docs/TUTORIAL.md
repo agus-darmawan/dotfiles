@@ -29,13 +29,12 @@ cd ~/dotfiles && ./install.sh
 |---|---|
 | `cd proj` lalu `Tab` | fzf-tab: completion jadi fuzzy, lengkap dengan preview isi folder |
 | ketik sebagian command | saran abu-abu muncul; `→` atau `C-Space` untuk menerima |
-| `C-r` | atuin: cari history full-screen |
+| `C-r` | cari history dengan fzf |
 | `C-t` | cari file lalu tempel path-nya |
 | `M-c` | fuzzy cd ke subfolder |
 | `cd elips` | zoxide melompat ke folder yang sering dikunjungi (cukup sebagian nama) |
 | `cdi` | zoxide interaktif |
 | `ll`, `lt` | ls dengan ikon, git status, dan tree |
-| `y` | yazi (file manager). Saat keluar, shell pindah ke folder terakhir |
 | `C-x C-e` | edit command panjang di nvim |
 
 **Kebiasaan yang perlu dibangun:** berhenti ketik path panjang. Pakai `cd <sebagian-nama>`.
