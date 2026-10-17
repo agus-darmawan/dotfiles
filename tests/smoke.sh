@@ -47,7 +47,7 @@ check "tmux config loads without errors" tmux_config
 check "tmux status segments" bash -c '
   s="$HOME/.config/tmux/scripts/status.sh"
   [[ -n "$("$s" cpu)" && -n "$("$s" mem)" ]]'
-check "zsh starts with helpers" zsh -ic 'for f in ros cb cbp tros trobot dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
+check "zsh starts with helpers" zsh -ic 'for f in ros cb cbp dev dsh sall plug; do whence -w $f >/dev/null || exit 1; done'
 
 echo "==> neovim"
 nvim_rc=0

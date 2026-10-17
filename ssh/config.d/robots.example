@@ -1,5 +1,5 @@
 # Copy to ~/.ssh/config.d/robots and adjust IPs/users to your robots.
-# Then: `s` (fuzzy picker) · `trobot go2` (tmux field layout) · `sall go2 lite3` (synced panes)
+# Then: `s` (fuzzy picker) · `dev go2` (tmux session on the robot) · `sall go2 lite3` (synced panes)
 
 Host go2
   HostName 192.168.123.18

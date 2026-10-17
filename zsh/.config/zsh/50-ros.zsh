@@ -6,7 +6,6 @@
 #   rmw <cyclone|fast|zenoh>
 #   cb / cbp / cbu / ct / rcl   colcon helpers (always run from ws root)
 #   rtopic rnode rsrv rif rparam   fzf pickers
-#   tros <container> [ws]          tmux ROS2 layout inside a container
 
 _ros_detect_distro() {
   local d
@@ -120,17 +119,6 @@ alias rr='ros2 run'
 alias rbag='ros2 bag'
 alias rdoc='ros2 doctor --report'
 alias rqt-graph='ros2 run rqt_graph rqt_graph'
-
-# tmux layouts --------------------------------------------------
-tros() {
-  local c=${1-} ws=${2-}
-  if [[ -n $c && -z $ws ]]; then
-    ws=$(docker inspect -f '{{.Config.WorkingDir}}' $c 2>/dev/null)
-  fi
-  SESSION=${c:-${ws:t}} CONTAINER=$c WS=$ws tmuxp load -y ros2
-}
-trobot() { SESSION=${1:?usage: trobot <ssh-host>} ROBOT=$1 tmuxp load -y robot; }
-tweb()   { local d=${1:-$PWD}; d=${d:A}; SESSION=${d:t} WS=$d tmuxp load -y web; }
 
 # auto-source base ROS (inside containers / robots)
 if [[ ${ROS_AUTO:-1} == 1 && -z $AMENT_PREFIX_PATH ]]; then

@@ -1,9 +1,20 @@
 # ── SSH ──────────────────────────────────────────────────────
 #   s            fuzzy pick host (enter=new tmux window, ctrl-v split, ctrl-o here)
+#   dev <host>   tmux session for a host: windows code / build / run, all over SSH
 #   sall <hosts> one tmux window, one pane per host, panes synced
 #   sfwd host p  forward remote port p → localhost:p (web dashboards, foxglove)
 
 alias s='~/.config/tmux/scripts/ssh-picker.sh'
+
+dev() {
+  local host=${1:?usage: dev <ssh-host>}
+  if ! tmux has-session -t="$host" 2>/dev/null; then
+    tmux new-session -d -s "$host" -n code "ssh $host"
+    tmux new-window -d -t "$host:" -n build "ssh $host"
+    tmux new-window -d -t "$host:" -n run "ssh $host"
+  fi
+  if [[ -n $TMUX ]]; then tmux switch-client -t="$host"; else tmux attach -t="$host"; fi
+}
 
 sall() {
   (( $# )) || { echo "usage: sall host1 host2 ..."; return 1; }

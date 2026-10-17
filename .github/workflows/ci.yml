@@ -38,7 +38,7 @@ jobs:
           pip install -q pyyaml
           python3 - <<'EOF'
           import glob, json, tomllib, yaml
-          for f in glob.glob("tmux/.config/tmuxp/*.yaml") + glob.glob(".github/workflows/*.yml") + ["lazygit/.config/lazygit/config.yml"]:
+          for f in glob.glob(".github/workflows/*.yml") + ["lazygit/.config/lazygit/config.yml"]:
               yaml.safe_load(open(f))
           tomllib.load(open("starship/.config/starship.toml", "rb"))
           json.load(open("nvim/.config/nvim/lazy-lock.json"))

@@ -65,7 +65,7 @@ backup() { # move a real (non-symlink) path out of the way
   fi
 }
 # whole config dirs (avoid mixing old + new nvim plugins etc.)
-for d in ghostty tmux tmuxp nvim zsh lazygit git; do backup ".config/$d"; done
+for d in ghostty tmux nvim zsh lazygit git; do backup ".config/$d"; done
 backup ".zshrc"
 backup ".config/starship.toml"
 stow -d "$DOTFILES" -t "$HOME" --restow "${PACKAGES[@]}"

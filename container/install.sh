@@ -50,7 +50,7 @@ if ((DO_APT)); then
     zsh tmux git curl wget ca-certificates unzip xz-utils gzip tar file less \
     build-essential ripgrep fd-find bat jq stow \
     python3-venv python3-pip clangd clang-format locales >/dev/null
-  $SUDO apt-get install -y -qq btop tmuxp >/dev/null 2>&1 || true
+  $SUDO apt-get install -y -qq btop >/dev/null 2>&1 || true
   $SUDO locale-gen en_US.UTF-8 >/dev/null 2>&1 || true
   ok "apt"
 fi
