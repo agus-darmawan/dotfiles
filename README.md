@@ -61,8 +61,8 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 **Neovim**
 - Own modular config, every language in one registry file: LSP, formatter, linter and parser.
 - C++ (clangd), Python, CMake, ROS launch/URDF/xacro XML, `.msg`/`.srv`, TypeScript and Next.js,
-  Flutter, Docker, Bash, Go, Rust, Swift, Lua, Markdown.
-- blink.cmp completion, snacks.nvim pickers and explorer, which-key, lazygit, diffview, DAP debugging.
+  Dart, Docker, Bash, Lua, Markdown.
+- 20 plugins: blink.cmp completion, snacks.nvim pickers and explorer, which-key, gitsigns, lazygit.
 
 <img src="assets/nvim.png" alt="clangd completion in Neovim" width="100%">
 
@@ -70,7 +70,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 - `Space rb` builds the package you are editing with colcon: errors land in the quickfix list,
   `compile_commands.json` is merged and clangd restarts.
 - Pickers for topics, nodes, services, launch files and executables; `ros2 interface show` for the
-  message under the cursor; debug a node from `install/` with codelldb.
+  message under the cursor.
 - Shell helpers inside containers and on robots (never on the Mac), for ROS 2 (colcon) and ROS 1 (catkin):
   `ros`, `rosdomain`/`rosmaster`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`.
 
@@ -106,7 +106,7 @@ Every key: [docs/KEYMAPS.md](docs/KEYMAPS.md)
 | For | Document |
 |---|---|
 | Learning the setup step by step (Bahasa Indonesia) | [TUTORIAL.md](docs/TUTORIAL.md) |
-| All shortcuts: Ghostty, tmux, Neovim, ROS, Flutter, git | [KEYMAPS.md](docs/KEYMAPS.md) |
+| All shortcuts: Ghostty, tmux, Neovim, ROS, git | [KEYMAPS.md](docs/KEYMAPS.md) |
 | Docker dev containers, Jetson, robots | [CONTAINER.md](docs/CONTAINER.md) |
 
 Personal overrides stay out of git: `~/.zshrc.local`, `~/.config/tmux/tmux.local.conf`,
