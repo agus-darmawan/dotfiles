@@ -100,6 +100,12 @@ for f in robots containers; do
   ok "created ~/.ssh/config.d/$f — edit hosts and ports there"
 done
 
+# ── App list for `app` ───────────────────────────────────────
+if [[ ! -f $HOME/.config/apps ]]; then
+  cp "$DOTFILES/templates/apps.example" "$HOME/.config/apps"
+  ok "created ~/.config/apps — list your web apps there"
+fi
+
 # ── Plugins ──────────────────────────────────────────────────
 if ((DO_PLUGINS)); then
   step "zsh plugins"
