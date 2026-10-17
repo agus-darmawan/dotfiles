@@ -20,7 +20,7 @@ work. The same config runs inside Docker dev containers and on robots over SSH.*
 [Install](#install) · [Features](#features) · [Keys](#keys) · [Documentation](#documentation) ·
 [Develop](#develop)
 
-<img src="assets/demo.gif" alt="tmux and Neovim: file picker, LSP hover, which-key, explorer, lazygit and the SSH picker" width="100%">
+<img src="assets/demo.gif" alt="app launcher, Cloudflare Tunnel status, SSH picker into a ROS 2 container, build and Neovim there" width="100%">
 
 </div>
 
@@ -56,7 +56,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 - `dev <host>` opens a session on a container or robot over SSH (windows code, build, run).
   `F12` hands every key to a tmux running on the robot.
 
-<img src="assets/tmux.png" alt="tmux with Neovim, a file tree and a running node" width="100%">
+<img src="assets/tmux.png" alt="tmux: a web app window and a container window with Neovim, a file tree and the tunnel routes" width="100%">
 
 **Neovim**
 - Own modular config, every language in one registry file: LSP, formatter, linter and parser.
@@ -64,7 +64,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
   Dart, Docker, Bash, Lua, Markdown.
 - 20 plugins: blink.cmp completion, snacks.nvim pickers and explorer, which-key, gitsigns, lazygit.
 
-<img src="assets/nvim.png" alt="clangd completion in Neovim" width="100%">
+<img src="assets/nvim.png" alt="clangd completion in Neovim inside a container" width="100%">
 
 **ROS 2**
 - `Space rb` builds the package you are editing with colcon: errors land in the quickfix list,
@@ -74,7 +74,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 - Shell helpers inside containers and on robots (never on the Mac), for ROS 2 (colcon) and ROS 1 (catkin):
   `ros`, `rosdomain`/`rosmaster`, `cb`/`cbp`/`ct`, `rtopic`, `rnode`.
 
-<img src="assets/ros-build.gif" alt="colcon build from Neovim: error in quickfix, fix, rebuild" width="100%">
+<img src="assets/ros-build.gif" alt="colcon build from Neovim in a container: error in quickfix, fix, rebuild" width="100%">
 
 **Containers and robots**
 - `dsh` / `C-a d` opens the best shell in any running container; `dev <host>` opens a full session in it over SSH.
