@@ -40,3 +40,9 @@ bindkey '^[b' backward-word
 autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^X^E' edit-command-line
+
+# Terminal / tab title = "host:path", e.g. "macbook:~/apps/netra" or "humble:~/ros2_ws".
+# Ghostty, iTerm2, VS Code and tmux (window names, outer title) all read it.
+_title_precmd() { print -Pn "\e]0;%m:%~\a" }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _title_precmd

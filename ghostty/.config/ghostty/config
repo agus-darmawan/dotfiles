@@ -41,7 +41,8 @@ clipboard-paste-protection = false
 # ── Shell integration ────────────────────────────────────────
 # ssh-terminfo: installs xterm-ghostty terminfo on remote hosts automatically
 # ssh-env     : falls back to xterm-256color when it can't
-shell-integration-features = no-cursor,ssh-terminfo,ssh-env
+# no-title    : zsh sets the title to "host:path" itself (same in iTerm2 and VS Code)
+shell-integration-features = no-cursor,no-title,ssh-terminfo,ssh-env
 
 # ── Quick terminal (drop-down, from anywhere) ────────────────
 # Needs: System Settings → Privacy & Security → Accessibility → Ghostty

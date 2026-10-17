@@ -17,7 +17,7 @@ Leader = `Space` · tmux prefix = `Ctrl-a`. In Neovim, press `Space` and wait �
 
 | Keys | Action |
 |---|---|
-| `C-a c` / `C-a C` | new window (same dir) / named after dir |
+| `C-a c` | new window in the same folder (windows are named after their folder, or the host in SSH panes) |
 | `C-a \|` (or `C-a \`) · `C-a -` | split right · split down |
 | `C-h/j/k/l` | move pane (seamless with Neovim; in SSH panes the key goes to the remote side) |
 | `C-a H/J/K/L` | resize pane (repeatable) |
