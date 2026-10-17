@@ -27,7 +27,7 @@ vim.defer_fn(function()
   local db = ws .. "/compile_commands.json"
   ros.build(pkg)
   local built = vim.wait(540000, function() return (vim.uv or vim.loop).fs_stat(db) ~= nil end, 500)
-  check("colcon build + compile_commands.json", built, table.concat(ros.last_log or {}, "\n"))
+  check("build + compile_commands.json", built, table.concat(ros.last_log or {}, "\n"))
 
   if built then
     local entries = vim.json.decode(table.concat(vim.fn.readfile(db), "\n"))

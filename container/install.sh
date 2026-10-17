@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────
-#  Linux / dev-container / Jetson installer (Ubuntu 22.04+ · x86_64 & arm64)
+#  Linux / dev-container / Jetson installer (Ubuntu 20.04+ · x86_64 & arm64)
+#  ROS 1 Noetic (20.04) and ROS 2 Humble/Jazzy containers; tmux stays on the Mac.
 #
 #  Inside the container (dotfiles mounted at ~/dotfiles):
 #     ~/dotfiles/container/install.sh
 #  Options:
 #     --no-apt     skip apt packages (already in image)
-#     --minimal    nvim + zsh + tmux only (no node / extras)
+#     --minimal    nvim + zsh only (no node / extras)
 # ─────────────────────────────────────────────────────────────
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PACKAGES=(zsh tmux nvim starship git lazygit)
+PACKAGES=(zsh nvim starship git lazygit)
 BIN="$HOME/.local/bin"
 mkdir -p "$BIN"
 export PATH="$BIN:$PATH"
@@ -36,6 +37,10 @@ esac
 step() { printf "\n\033[34m==>\033[0m %s\n" "$*"; }
 ok() { printf "  \033[32m✓\033[0m %s\n" "$*"; }
 
+# glibc of this system, e.g. 2.31 on Ubuntu 20.04
+GLIBC=$(ldd --version 2>/dev/null | head -1 | grep -oE '[0-9]+\.[0-9]+$')
+glibc_at_least() { [[ $(printf '%s\n%s\n' "$1" "$GLIBC" | sort -V | head -1) == "$1" ]]; }
+
 gh_latest() { # owner/repo → newest semver tag without the leading v (no API rate limits)
   git ls-remote --tags --refs "https://github.com/$1" |
     grep -oE 'refs/tags/v?[0-9]+\.[0-9]+\.[0-9]+$' | sed -E 's#refs/tags/v?##' | sort -V | tail -1
@@ -47,7 +52,7 @@ if ((DO_APT)); then
   export DEBIAN_FRONTEND=noninteractive
   $SUDO apt-get update -qq
   $SUDO apt-get install -y -qq --no-install-recommends \
-    zsh tmux git curl wget ca-certificates unzip xz-utils gzip tar file less \
+    zsh git curl wget ca-certificates unzip xz-utils gzip tar file less \
     build-essential ripgrep fd-find bat jq stow \
     python3-venv python3-pip clangd clang-format locales >/dev/null
   $SUDO apt-get install -y -qq btop >/dev/null 2>&1 || true
@@ -58,7 +63,10 @@ fi
 # ── Neovim (latest stable release) ──────────────────────────
 step "Neovim"
 NV_DIR="$HOME/.local/opt/nvim"
-curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${ARCH}.tar.gz" -o /tmp/nvim.tgz
+# official builds need glibc 2.34+; neovim-releases builds the same version for older systems
+NV_REPO=neovim/neovim
+glibc_at_least 2.34 || NV_REPO=neovim/neovim-releases
+curl -fsSL "https://github.com/$NV_REPO/releases/latest/download/nvim-linux-${ARCH}.tar.gz" -o /tmp/nvim.tgz
 rm -rf "$NV_DIR" && mkdir -p "$NV_DIR"
 tar -xzf /tmp/nvim.tgz -C "$NV_DIR" --strip-components=1 && rm /tmp/nvim.tgz
 ln -sf "$NV_DIR/bin/nvim" "$BIN/nvim"
@@ -96,9 +104,13 @@ if ((!MINIMAL)); then
   fi
   ok "node $(node --version)"
 
-  # ── tree-sitter CLI (nvim-treesitter main branch) ─────────
+  # ── tree-sitter CLI (compiles parsers; its binary needs glibc 2.39+) ──
   step "tree-sitter CLI"
-  npm install -g --prefix "$HOME/.local" tree-sitter-cli >/dev/null 2>&1 && ok "tree-sitter $(tree-sitter --version | cut -d' ' -f2)"
+  if glibc_at_least 2.39; then
+    npm install -g --prefix "$HOME/.local" tree-sitter-cli >/dev/null 2>&1 && ok "tree-sitter $(tree-sitter --version | cut -d' ' -f2)"
+  else
+    ok "skipped (glibc $GLIBC): Neovim uses its bundled parsers and regex syntax"
+  fi
 
   # ── eza ───────────────────────────────────────────────────
   if ! command -v eza >/dev/null; then
@@ -108,7 +120,7 @@ fi
 
 # ── Link configs ─────────────────────────────────────────────
 step "Linking configs"
-for d in nvim tmux zsh lazygit git; do
+for d in nvim zsh lazygit git; do
   [[ -d $HOME/.config/$d && ! -L $HOME/.config/$d ]] && mv "$HOME/.config/$d" "$HOME/.config/$d.bak.$(date +%s)"
 done
 [[ -f $HOME/.zshrc && ! -L $HOME/.zshrc ]] && mv "$HOME/.zshrc" "$HOME/.zshrc.bak.$(date +%s)"
