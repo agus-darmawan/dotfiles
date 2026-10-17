@@ -4,12 +4,13 @@
 
 [core]
 	editor = nvim
-	pager = delta
+	# delta when installed, plain less otherwise (fresh containers, robots)
+	pager = "command -v delta >/dev/null && exec delta || exec less -R"
 	autocrlf = input
 	excludesfile = ~/.config/git/ignore
 
 [interactive]
-	diffFilter = delta --color-only
+	diffFilter = "command -v delta >/dev/null && exec delta --color-only || exec cat"
 
 [delta]
 	navigate = true
