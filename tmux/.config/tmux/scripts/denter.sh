@@ -10,7 +10,6 @@ if [[ -z $container ]]; then
 fi
 
 args=(-it -e "TERM=${TERM_CONTAINER:-xterm-256color}" -e "COLORTERM=truecolor")
-[[ -n ${ROS_DOMAIN_ID:-} ]] && args+=(-e "ROS_DOMAIN_ID=$ROS_DOMAIN_ID")
 [[ -n $dir ]] && args+=(-w "$dir")
 
 exec docker exec "${args[@]}" "$container" sh -c \
