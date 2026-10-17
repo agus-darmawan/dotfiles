@@ -1,0 +1,26 @@
+# Dev containers reached over SSH. Copied to ~/.ssh/config.d/containers by install.sh.
+# Each container runs sshd bound to localhost with its own port (see docs/CONTAINER.md).
+# Then: `ssh humble` · `dev humble` (tmux session: code / build / run) · `s` (picker)
+
+Host humble
+  HostName localhost
+  Port 2222
+  User dev
+
+Host jazzy
+  HostName localhost
+  Port 2223
+  User dev
+
+Host noetic
+  HostName localhost
+  Port 2224
+  User dev
+
+# Containers are rebuilt often: don't pin their host keys, forward the agent for git.
+Host humble jazzy noetic
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  LogLevel ERROR
+  ForwardAgent yes
+  SetEnv COLORTERM=truecolor
