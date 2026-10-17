@@ -116,12 +116,9 @@ ok "linked: ${PACKAGES[*]}"
 
 # ── Plugins ──────────────────────────────────────────────────
 step "Plugins"
-TPM="$HOME/.local/share/tmux/plugins/tpm"
-[[ -d $TPM ]] || git clone -q --depth=1 https://github.com/tmux-plugins/tpm "$TPM"
-TMUX_PLUGIN_MANAGER_PATH="$HOME/.local/share/tmux/plugins/" "$TPM/bin/install_plugins" >/dev/null 2>&1 || true
 zsh -ic 'exit 0' >/dev/null 2>&1 || true
 nvim --headless "+Lazy! restore" +qa >/dev/null 2>&1 || true
-ok "tmux · zsh · nvim plugins"
+ok "zsh · nvim plugins"
 
 # ROS colcon defaults (compile_commands + debug symbols)
 if [[ -d /opt/ros ]] && [[ ! -f $HOME/.colcon/defaults.yaml ]]; then

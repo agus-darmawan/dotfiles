@@ -58,7 +58,7 @@ Latihan:
 5. `C-a g` lazygit, `C-a b` btop, `C-a D` lazydocker. Semuanya popup, tutup dengan `q`
 6. `C-a t` **scratch terminal** mengambang. Isinya tidak hilang walau ditutup
 7. `C-a v` masuk copy mode, `v` mulai seleksi, `y` copy ke clipboard Mac
-8. Tutup Ghostty, buka lagi, ketik `t`. Session masih utuh.
+8. Tutup Ghostty, buka lagi, ketik `t`. Session tmux masih jalan selama Mac tidak di-restart.
 
 ### Satu session per project
 
@@ -300,7 +300,6 @@ Setelah edit: `zr` reload zsh, `C-a r` reload tmux, `cmd+shift+,` reload Ghostty
 | Theme Ghostty error | `ghostty +list-themes \| grep -i catppuccin`, lalu samakan namanya di config |
 | Backspace / warna aneh saat SSH | sudah ditangani `ssh-terminfo`. Kalau masih, `export TERM=xterm-256color` di host itu |
 | clangd tidak kenal header ROS | build dulu (`cbp pkg` / `Space rb`). Pastikan `compile_commands.json` ada di root workspace |
-| Plugin tmux belum ada | di tmux tekan `C-a I` |
 | Treesitter parser gagal install | perlu `tree-sitter` CLI dan compiler C (`xcode-select --install`) |
 | Copy dari container tidak masuk clipboard | pastikan lewat tmux ini (OSC52 sudah aktif). Di Ghostty `clipboard-write = allow` |
 | Neovim lambat start pertama kali | normal, Mason dan treesitter sedang install. Cek dengan `:Lazy` dan `:Mason` |
