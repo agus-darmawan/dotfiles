@@ -43,6 +43,7 @@ jobs:
           tomllib.load(open("starship/.config/starship.toml", "rb"))
           json.load(open("nvim/.config/nvim/lazy-lock.json"))
           json.load(open("iterm2/dotfiles.json"))
+          json.load(open("vscode/settings.json"))
           print("ok")
           EOF
 
