@@ -106,12 +106,13 @@ local function build_cmd(ws, pkg)
     return vim.list_extend(args, cmake)
   end
   if exe("catkin") and (isdir(ws .. "/.catkin_tools") or not isdir(ws .. "/devel")) then
-    local args = { "catkin", "build", "--no-status" }
+    local args = { "catkin", "build", "--workspace", ws, "--no-status" }
     if pkg then table.insert(args, pkg) end
     table.insert(args, "--cmake-args")
     return vim.list_extend(args, cmake)
   end
-  local args = vim.list_extend({ "catkin_make" }, cmake)
+  -- catkin_make takes its base path from $PWD, not the process cwd: pass it explicitly
+  local args = vim.list_extend({ "catkin_make", "-C", ws }, cmake)
   table.insert(args, "-DCATKIN_WHITELIST_PACKAGES=" .. (pkg or ""))
   return args
 end
