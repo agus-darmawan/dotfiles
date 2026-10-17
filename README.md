@@ -51,8 +51,8 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 - Ghostty with Catppuccin Mocha, JetBrainsMono Nerd Font and a drop-down quick terminal on `` cmd+` ``.
 - tmux status bar on top: session, windows, ROS domain, CPU, RAM, running containers, IP, battery, time.
 - Popups for lazygit, lazydocker and btop; fuzzy pickers for projects, sessions, SSH hosts and containers.
-- Layouts with one command: `tros` (ROS 2 inside a container), `trobot go2` (field session on a
-  robot), `tweb` (web and Flutter). `F12` hands every key to a tmux running on the robot.
+- `dev <host>` opens a session on a container or robot over SSH (windows code, build, run).
+  `F12` hands every key to a tmux running on the robot.
 
 <img src="assets/tmux.png" alt="tmux with Neovim, a file tree and a running node" width="100%">
 
@@ -74,7 +74,7 @@ Inside a dev container, a Jetson or a robot: `~/dotfiles/container/install.sh`
 <img src="assets/ros-build.gif" alt="colcon build from Neovim: error in quickfix, fix, rebuild" width="100%">
 
 **Containers and robots**
-- `dsh` / `C-a d` opens the best shell in any running container; `tros` puts every pane inside it.
+- `dsh` / `C-a d` opens the best shell in any running container; `dev <host>` opens a full session in it over SSH.
 - SSH multiplexing: extra panes on the same robot connect instantly; `sall go2 lite3` types into
   several robots at once.
 - `NVIM_OFFLINE=1` on machines without internet skips every automatic download.

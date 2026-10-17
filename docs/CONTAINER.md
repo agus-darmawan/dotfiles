@@ -54,8 +54,7 @@ RUN /home/dev/dotfiles/container/install.sh
 The recommended setup: **tmux runs on the Mac**, panes enter the container.
 
 ```bash
-tros elips_dev                     # workdir taken from the container
-tros elips_dev /home/dev/elips_ws  # explicit
+dev elips_dev      # session "elips_dev": windows code / build / run, each over SSH
 ```
 
 You get windows `code` (nvim), `build`, `run` (4 panes), `sys` — every pane already inside the container,

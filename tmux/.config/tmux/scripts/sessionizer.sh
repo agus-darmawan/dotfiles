@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # Fuzzy-pick a project dir → create/switch to a tmux session named after it.
-# If the project has a .tmuxp.yaml, that layout is loaded instead.
 #
 # Search roots: $TMUX_SESSIONIZER_PATHS (space separated) or sensible defaults.
 
@@ -45,11 +44,7 @@ else
   dir=${sel/#\~/$HOME}
   name=$(basename "$dir" | tr '.:' '__')
   if ! tmux has-session -t="$name" 2>/dev/null; then
-    if [[ -f $dir/.tmuxp.yaml ]] && command -v tmuxp >/dev/null 2>&1; then
-      tmuxp load -d -y -s "$name" "$dir/.tmuxp.yaml" >/dev/null
-    else
-      tmux new-session -d -s "$name" -c "$dir" -n code
-    fi
+    tmux new-session -d -s "$name" -c "$dir"
   fi
 fi
 

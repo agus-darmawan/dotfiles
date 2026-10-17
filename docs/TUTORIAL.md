@@ -64,7 +64,6 @@ Latihan:
 
 `C-a f` membuka **sessionizer**: pilih folder project, otomatis jadi session baru dengan nama folder itu. Pindah antar project pakai `C-a s`.
 
-Kalau project punya file `.tmuxp.yaml`, layout-nya otomatis dimuat (lihat Hari 6).
 
 ---
 
@@ -178,23 +177,23 @@ Python node: buka file `.py`, `Space db`, lalu `F5`. debugpy sudah terpasang.
 
 ---
 
-## Hari 6 — Layout siap pakai
+## Hari 6 — Session per container / robot
 
-### ROS 2 di dev container (dari Mac)
+### Dev container (dari Mac)
 
 ```bash
-tros elips_dev
+dev humble
 ```
 
-Hasilnya satu session dengan window `code` (nvim), `build`, `run` (4 pane), dan `sys`. **Semua pane sudah di dalam container** dan ROS-nya sudah tersource. Detail container ada di [CONTAINER.md](CONTAINER.md).
+Hasilnya satu session `humble` dengan window `code`, `build`, dan `run`. **Tiap window SSH ke container**, jadi ROS-nya sudah tersource di sana. Detail container ada di [CONTAINER.md](CONTAINER.md).
 
 ### Turun ke lapangan (robot via SSH)
 
 ```bash
-trobot go2
+dev go2
 ```
 
-Session ini berisi window `shell`, `monitor` (btop + 2 shell), `logs` (journalctl), dan `local`. Karena SSH multiplexing, pane kedua dan seterusnya langsung konek tanpa login ulang.
+Sama, tapi ke robot. Karena SSH multiplexing, window kedua dan seterusnya langsung konek tanpa login ulang.
 
 Banyak robot sekaligus:
 
@@ -203,29 +202,6 @@ sall go2 lite3 genisom     # 1 window, 1 pane per robot, input tersinkron
 ```
 
 `C-a y` untuk mematikan atau menyalakan sinkronisasi.
-
-### Web / Next.js / Flutter
-
-```bash
-tweb ~/Projects/molly-dashboard
-```
-
-### Layout per project
-
-Taruh `.tmuxp.yaml` di root project. `C-a f` akan memuatnya otomatis. Contohnya:
-
-```yaml
-session_name: nextgen-gcs
-start_directory: ~/Projects/nextgen-gcs
-windows:
-  - window_name: code
-    panes: [nvim .]
-  - window_name: dev
-    layout: even-horizontal
-    panes:
-      - cd apps/web && pnpm dev
-      - cd apps/api && pnpm dev
-```
 
 ---
 
