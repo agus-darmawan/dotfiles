@@ -220,7 +220,8 @@ tun() {
       else print -P "%F{red}●%f cloudflared not running"; fi
       if [[ -f $CF_CONFIG ]]; then
         echo "tunnel: $(_tun_name)   config: ${CF_CONFIG/#$HOME/~}"
-        _tun_routes | awk -F'\t' '{printf "  %-36s → %s\n", $1, $2}'
+        _tun_routes | awk -F'\t' '{h[NR] = $1; s[NR] = $2; if (length($1) > w) w = length($1)}
+          END {for (i = 1; i <= NR; i++) printf "  %-" w "s → %s\n", h[i], s[i]}'
       else
         echo "no config at $CF_CONFIG (set CLOUDFLARED_CONFIG)"
       fi
