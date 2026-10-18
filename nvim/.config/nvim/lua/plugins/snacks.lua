@@ -24,7 +24,7 @@ return {
       picker = {
         enabled = true,
         ui_select = true,
-        layout = { preset = "telescope" },
+        layout = { preset = "telescope", fullscreen = true }, -- use the whole screen (Alt-m toggles)
         sources = {
           explorer = { layout = { layout = { position = "right" } }, hidden = true },
           files = { hidden = true },
