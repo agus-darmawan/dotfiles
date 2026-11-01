@@ -60,7 +60,7 @@ jobs:
             texlive-latex-extra texlive-fonts-recommended >/dev/null
       - name: build docs/manual/manual.pdf
         run: make -C docs/manual
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: user-manual
           path: docs/manual/manual.pdf
